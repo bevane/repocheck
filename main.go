@@ -15,11 +15,15 @@ func check(e error) {
 }
 
 func main() {
-	root := "."
+	root := "/home/bevane/repos/"
 	fileSystem := os.DirFS(root)
 	fs.WalkDir(fileSystem, ".", func(path string, d fs.DirEntry, err error) error {
 		check(err)
+		if !d.IsDir() {
+			return nil
+		}
 		subDirs, err := os.ReadDir(filepath.Join(root, path))
+		check(err)
 		for _, dir := range subDirs {
 			if dir.Name() == ".git" {
 				fmt.Println(path)
