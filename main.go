@@ -11,6 +11,7 @@ func main() {
 	root := "."
 	fsys := os.DirFS(root)
 	repoDirectories := app.ListRepoDirectories(fsys)
-	fmt.Println(repoDirectories)
-
+	for _, repo := range repoDirectories {
+		fmt.Printf("%v %v %v \n", repo.Name, repo.Path, repo.LastModified.String())
+	}
 }
