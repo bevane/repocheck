@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"path/filepath"
 	"time"
 )
 
@@ -35,7 +36,8 @@ func CLI() int {
 	fsys := os.DirFS(root)
 	repos := ListRepoDirectories(fsys)
 	for _, repo := range repos {
-		fmt.Printf("%v %v %v \n", repo.Name, repo.Path, repo.LastModified.String())
+		absPath := filepath.Join(root, repo.Path)
+		fmt.Printf("%v %v %v \n", repo.Name, absPath, repo.LastModified.String())
 	}
 	return 0
 }
