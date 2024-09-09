@@ -1,6 +1,7 @@
 package app
 
 import (
+	"flag"
 	"fmt"
 	"io/fs"
 	"os"
@@ -21,7 +22,16 @@ type Repo struct {
 }
 
 func CLI() int {
-	root := "."
+	flag.Parse()
+	pathArg := flag.Arg(0)
+	var root string
+	var err error
+	if pathArg == "" {
+		root, err = os.Getwd()
+		check(err)
+	} else {
+		root = pathArg
+	}
 	fsys := os.DirFS(root)
 	repos := ListRepoDirectories(fsys)
 	for _, repo := range repos {
