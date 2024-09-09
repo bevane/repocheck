@@ -1,7 +1,9 @@
 package app
 
 import (
+	"fmt"
 	"io/fs"
+	"os"
 	"time"
 )
 
@@ -18,6 +20,16 @@ type Repo struct {
 	LastModified time.Time
 }
 
+func CLI() int {
+	root := "."
+	fsys := os.DirFS(root)
+	repos := ListRepoDirectories(fsys)
+	for _, repo := range repos {
+		fmt.Printf("%v %v %v \n", repo.Name, repo.Path, repo.LastModified.String())
+	}
+	return 0
+}
+
 func getContentLastModifiedTime(fileSystem fs.FS) time.Time {
 	// returns the lastModified time of the most recently modified file/directory
 	// in the given files system while ignoring the .git folder
@@ -25,6 +37,7 @@ func getContentLastModifiedTime(fileSystem fs.FS) time.Time {
 	check(err)
 	lastModified := dirInfo.ModTime()
 	fs.WalkDir(fileSystem, ".", func(path string, d fs.DirEntry, err error) error {
+		check(err)
 		// ignore .git folder's last modified date since it can change
 		// when running git status even though the repo's contents have
 		// not changed
