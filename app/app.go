@@ -58,10 +58,48 @@ func getSyncStatus(absPath string) (bool, string) {
 	check(err)
 	allChangesCommited := strings.Contains(string(out), "nothing to commit")
 	if !allChangesCommited {
-		statusDescription += "- has uncommitted changes"
+		statusDescription += "- has uncommitted changes\n"
 
 	}
-	return allChangesCommited, statusDescription
+
+	branchesNoRemote := false
+	branchesAhead := false
+	branchesBehind := false
+	// this command will return an output where each line will contain
+	// the status of the branch: "=" - synced, ">" - ahead, "<" - behind
+	// "" - no remote branch
+	cmdBranchStatus := exec.Command("git", "for-each-ref", "--format=%(upstream:trackshort)", "refs/heads")
+	cmdBranchStatus.Dir = absPath
+	out, err = cmdBranchStatus.Output()
+	check(err)
+	// remove the trailing new line from the output because otherwise
+	// it will result in a "" in slice when the output is split on \n
+	// leading to "" being evaluated as a branch as well later
+	outWithoutEndingNewLine := strings.TrimSuffix(string(out), "\n")
+	branches := strings.Split(outWithoutEndingNewLine, "\n")
+	for _, branch := range branches {
+		switch branch {
+		case "":
+			branchesNoRemote = true
+		case ">":
+			branchesAhead = true
+		case "<":
+			branchesBehind = true
+		}
+
+	}
+	if branchesNoRemote {
+		statusDescription += "- has branch(es) with no remote branch\n"
+	}
+	if branchesAhead {
+		statusDescription += "- has branch(es) that is/are ahead\n"
+	}
+	if branchesBehind {
+		statusDescription += "- has branch(es) that is/are behind\n"
+	}
+	allBranchesSynced := !branchesNoRemote && !branchesAhead && !branchesBehind
+	syncedWithRemote := allBranchesSynced && allChangesCommited
+	return syncedWithRemote, statusDescription
 }
 
 func getContentLastModifiedTime(fileSystem fs.FS) time.Time {
