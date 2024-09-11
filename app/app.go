@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -17,9 +19,12 @@ func check(e error) {
 }
 
 type Repo struct {
-	Name         string
-	Path         string
-	LastModified time.Time
+	Name             string
+	Path             string
+	AbsPath          string
+	LastModified     time.Time
+	SyncedWithRemote bool
+	SyncDescription  string
 }
 
 func CLI() int {
@@ -37,9 +42,26 @@ func CLI() int {
 	repos := ListRepoDirectories(fsys)
 	for _, repo := range repos {
 		absPath := filepath.Join(root, repo.Path)
-		fmt.Printf("%v %v %v \n", repo.Name, absPath, repo.LastModified.String())
+		repo.AbsPath = absPath
+		syncedwithRemote, syncDescription := getSyncStatus(repo.AbsPath)
+
+		fmt.Printf("%v %v %v %v %v \n", repo.Name, repo.AbsPath, repo.LastModified.String(), syncedwithRemote, syncDescription)
 	}
 	return 0
+}
+
+func getSyncStatus(absPath string) (bool, string) {
+	var statusDescription string
+	cmdCommitStatus := exec.Command("git", "status")
+	cmdCommitStatus.Dir = absPath
+	out, err := cmdCommitStatus.Output()
+	check(err)
+	allChangesCommited := strings.Contains(string(out), "nothing to commit")
+	if !allChangesCommited {
+		statusDescription += "- has uncommitted changes"
+
+	}
+	return allChangesCommited, statusDescription
 }
 
 func getContentLastModifiedTime(fileSystem fs.FS) time.Time {
