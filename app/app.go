@@ -81,17 +81,24 @@ func constructTable(repos []Repo) *table.Table {
 
 }
 
+func EvaluateCommitSyncStatus(gitOut string) (bool, string) {
+	if gitOut == "" {
+		return true, ""
+	} else {
+		return false, "- has uncommitted changes\n"
+	}
+
+}
+
 func getSyncStatus(absPath string) (bool, string) {
 	var statusDescription string
-	cmdCommitStatus := exec.Command("git", "status")
+	cmdCommitStatus := exec.Command("git", "status", "-s")
 	cmdCommitStatus.Dir = absPath
 	out, err := cmdCommitStatus.Output()
 	check(err)
-	allChangesCommited := strings.Contains(string(out), "nothing to commit")
-	if !allChangesCommited {
-		statusDescription += "- has uncommitted changes\n"
-
-	}
+	fmt.Println(string(out))
+	allChangesCommitted, commitStatusDescription := EvaluateCommitSyncStatus(string(out))
+	statusDescription += commitStatusDescription
 
 	branchesNoRemote := false
 	branchesAhead := false
@@ -131,7 +138,7 @@ func getSyncStatus(absPath string) (bool, string) {
 	// remove trailing new line in description for prettier table printing
 	statusDescription = strings.TrimSuffix(string(statusDescription), "\n")
 	allBranchesSynced := !branchesNoRemote && !branchesAhead && !branchesBehind
-	syncedWithRemote := allBranchesSynced && allChangesCommited
+	syncedWithRemote := allBranchesSynced && allChangesCommitted
 	return syncedWithRemote, statusDescription
 }
 

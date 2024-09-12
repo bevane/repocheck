@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 	"testing/fstest"
@@ -54,5 +55,44 @@ func TestGetContentLastModifiedDate(t *testing.T) {
 	got := getContentLastModifiedTime(testFsys)
 	if !got.Equal(want) {
 		t.Errorf("got %v want %v", got, want)
+	}
+}
+
+func TestEvaluateCommitSyncStatus(t *testing.T) {
+	var tests = []struct {
+		gitOut     string
+		wantBool   bool
+		wantString string
+	}{
+		{
+			"",
+			true,
+			"",
+		},
+		{
+			"M app/app_test.go",
+			false,
+			"- has uncommitted changes\n",
+		},
+		{
+			"M  .jest.config.json\nM  package.json\nA  main.js",
+			false,
+			"- has uncommitted changes\n",
+		},
+	}
+
+	for _, tt := range tests {
+
+		testname := fmt.Sprintf("%v", tt.gitOut)
+		t.Run(testname, func(t *testing.T) {
+			gotBool, gotString := EvaluateCommitSyncStatus(tt.gitOut)
+			if gotBool != tt.wantBool || gotString != tt.wantString {
+				t.Errorf(
+					"got (%v, %v) , want (%v, %v)",
+					gotBool, gotString,
+					tt.wantBool, tt.wantString,
+				)
+			}
+		})
 	}
 }
