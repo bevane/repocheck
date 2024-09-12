@@ -56,8 +56,25 @@ func CLI() int {
 		return !repo.valid
 	})
 	table := constructTable(repos)
-	fmt.Printf("%v\n", table)
+	summary := constructSummary(repos, root)
+	fmt.Printf("%v\n%v\n", table, summary)
 	return 0
+}
+
+func constructSummary(repos []Repo, root string) string {
+	countRepos := len(repos)
+	var countUnsynced int
+	for _, repo := range repos {
+		if !repo.SyncedWithRemote {
+			countUnsynced++
+		}
+	}
+	return fmt.Sprintf(
+		"%v repos found in %v: %v is/are not synced",
+		countRepos,
+		root,
+		countUnsynced,
+	)
 }
 
 func constructTable(repos []Repo) *table.Table {
