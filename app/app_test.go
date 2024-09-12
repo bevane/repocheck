@@ -40,7 +40,7 @@ func TestListRepoDirectories(t *testing.T) {
 			valid:        true,
 		},
 	}
-	got := ListRepoDirectories(testFsys)
+	got, _ := ListRepoDirectories(testFsys)
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %v want %v", got, want)
 	}

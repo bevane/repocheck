@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-// helper function to streamline error checks
+// helper function to streamline error checks for unhandled errors
 func check(e error) {
 	if e != nil {
 		panic(e)
@@ -37,12 +37,25 @@ func CLI() int {
 	var err error
 	if pathArg == "" {
 		root, err = os.Getwd()
-		check(err)
+		if err != nil {
+			errorMsg := fmt.Errorf("repocheck: Error getting working dir: %v", err)
+			fmt.Println(errorMsg)
+			return 1
+		}
 	} else {
 		root = pathArg
 	}
 	fsys := os.DirFS(root)
-	repos := ListRepoDirectories(fsys)
+	repos, err := ListRepoDirectories(fsys)
+	if err != nil {
+		errorMsg := fmt.Errorf(
+			"repocheck: cannot run check on '%v': %v",
+			root,
+			err,
+		)
+		fmt.Println(errorMsg)
+		return 1
+	}
 	for i := range repos {
 		absPath := filepath.Join(root, repos[i].Path)
 		repos[i].AbsPath = absPath
@@ -55,7 +68,15 @@ func CLI() int {
 	repos = slices.DeleteFunc(repos, func(repo Repo) bool {
 		return !repo.valid
 	})
-	table := constructTable(repos)
+	table, err := constructTable(repos)
+	if err != nil {
+		errorMsg := fmt.Errorf(
+			"repocheck: error constructing table: %v",
+			err,
+		)
+		fmt.Println(errorMsg)
+		return 1
+	}
 	summary := constructSummary(repos, root)
 	fmt.Printf("%v\n%v\n", table, summary)
 	return 0
@@ -77,9 +98,11 @@ func constructSummary(repos []Repo, root string) string {
 	)
 }
 
-func constructTable(repos []Repo) *table.Table {
+func constructTable(repos []Repo) (*table.Table, error) {
 	t, err := table.NewTable("| C{15} | L{20} | c | c | L{27} |")
-	check(err)
+	if err != nil {
+		return nil, err
+	}
 	t.AddThickRule()
 	t.AddRow("Repo", "Path", "Last Modified", "Synced?", "Sync Details")
 	t.AddThickRule()
@@ -102,7 +125,7 @@ func constructTable(repos []Repo) *table.Table {
 		)
 		t.AddSingleRule()
 	}
-	return t
+	return t, nil
 
 }
 
@@ -209,10 +232,12 @@ func getContentLastModifiedTime(fileSystem fs.FS) time.Time {
 	return lastModified
 }
 
-func ListRepoDirectories(fileSystem fs.FS) []Repo {
+func ListRepoDirectories(fileSystem fs.FS) ([]Repo, error) {
 	var repoDirectories []Repo
-	fs.WalkDir(fileSystem, ".", func(path string, d fs.DirEntry, err error) error {
-		check(err)
+	err := fs.WalkDir(fileSystem, ".", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
 		if !d.IsDir() {
 			return nil
 		}
@@ -241,5 +266,8 @@ func ListRepoDirectories(fileSystem fs.FS) []Repo {
 		}
 		return nil
 	})
-	return repoDirectories
+	if err != nil {
+		return nil, err
+	}
+	return repoDirectories, nil
 }
