@@ -1,0 +1,4 @@
+github.com/clinaresl/table v1.1.0-beta h1:L6Nk+ukVDK8bNQ+0VZusp3xWbQUvqwddLpwatvSNBCM=
+github.com/clinaresl/table v1.1.0-beta/go.mod h1:uV9TnyDj9zc7LOJJv8pbrcMyPAV7TsC4am1xQLzdjPY=
+golang.org/x/exp v0.0.0-20230713183714-613f0c0eb8a1 h1:MGwJjxBy0HJshjDNfLsYO8xppfqWlA5ZT9OhtUUhTNw=
+golang.org/x/exp v0.0.0-20230713183714-613f0c0eb8a1/go.mod h1:FXUEEKJgO7OQYeo8N01OfiKP8RXMtf6e8aTskBGqWdc=

@@ -3,6 +3,7 @@ package app
 import (
 	"flag"
 	"fmt"
+	"github.com/clinaresl/table"
 	"io/fs"
 	"os"
 	"os/exec"
@@ -40,14 +41,44 @@ func CLI() int {
 	}
 	fsys := os.DirFS(root)
 	repos := ListRepoDirectories(fsys)
-	for _, repo := range repos {
-		absPath := filepath.Join(root, repo.Path)
-		repo.AbsPath = absPath
-		syncedwithRemote, syncDescription := getSyncStatus(repo.AbsPath)
-
-		fmt.Printf("%v %v %v %v %v \n", repo.Name, repo.AbsPath, repo.LastModified.String(), syncedwithRemote, syncDescription)
+	for i := range repos {
+		absPath := filepath.Join(root, repos[i].Path)
+		check(err)
+		repos[i].AbsPath = absPath
+		repos[i].SyncedWithRemote, repos[i].SyncDescription = getSyncStatus(repos[i].AbsPath)
 	}
+	table := constructTable(repos)
+	fmt.Printf("%v\n", table)
 	return 0
+}
+
+func constructTable(repos []Repo) *table.Table {
+	t, err := table.NewTable("| C{15} | L{20} | c | c | L{27} |")
+	check(err)
+	t.AddThickRule()
+	t.AddRow("Repo", "Path", "Last Modified", "Synced?", "Sync Details")
+	t.AddThickRule()
+	for i := range repos {
+		year, month, day := repos[i].LastModified.Date()
+		LastModifiedDate := fmt.Sprintf("%04d-%02d-%02d", year, int(month), day)
+		var isSynced string
+		if repos[i].SyncedWithRemote {
+			isSynced = "yes"
+		} else {
+			isSynced = "no"
+		}
+
+		t.AddRow(
+			repos[i].Name,
+			repos[i].AbsPath,
+			LastModifiedDate,
+			isSynced,
+			repos[i].SyncDescription,
+		)
+		t.AddSingleRule()
+	}
+	return t
+
 }
 
 func getSyncStatus(absPath string) (bool, string) {
@@ -97,6 +128,8 @@ func getSyncStatus(absPath string) (bool, string) {
 	if branchesBehind {
 		statusDescription += "- has branch(es) that is/are behind\n"
 	}
+	// remove trailing new line in description for prettier table printing
+	statusDescription = strings.TrimSuffix(string(statusDescription), "\n")
 	allBranchesSynced := !branchesNoRemote && !branchesAhead && !branchesBehind
 	syncedWithRemote := allBranchesSynced && allChangesCommited
 	return syncedWithRemote, statusDescription
