@@ -96,3 +96,57 @@ func TestEvaluateCommitSyncStatus(t *testing.T) {
 		})
 	}
 }
+
+func TestEvaluateBranchSyncStatus(t *testing.T) {
+	var tests = []struct {
+		gitOut     string
+		wantBool   bool
+		wantString string
+	}{
+		{
+			"=",
+			true,
+			"",
+		},
+		{
+			"",
+			false,
+			"- has branch(es) with no remote branch\n",
+		},
+		{
+			">",
+			false,
+			"- has branch(es) that is/are ahead\n",
+		},
+		{
+			"<",
+			false,
+			"- has branch(es) that is/are behind\n",
+		},
+		{
+			"\n=",
+			false,
+			"- has branch(es) with no remote branch\n",
+		},
+		{
+			"\n=\n>",
+			false,
+			"- has branch(es) with no remote branch\n- has branch(es) that is/are ahead\n",
+		},
+	}
+
+	for _, tt := range tests {
+
+		testname := fmt.Sprintf("%v", tt.gitOut)
+		t.Run(testname, func(t *testing.T) {
+			gotBool, gotString := EvaluateBranchSyncStatus(tt.gitOut)
+			if gotBool != tt.wantBool || gotString != tt.wantString {
+				t.Errorf(
+					"got (%v, %v) , want (%v, %v)",
+					gotBool, gotString,
+					tt.wantBool, tt.wantString,
+				)
+			}
+		})
+	}
+}

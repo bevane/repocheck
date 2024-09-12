@@ -90,30 +90,17 @@ func EvaluateCommitSyncStatus(gitOut string) (bool, string) {
 
 }
 
-func getSyncStatus(absPath string) (bool, string) {
+func EvaluateBranchSyncStatus(gitOut string) (bool, string) {
 	var statusDescription string
-	cmdCommitStatus := exec.Command("git", "status", "-s")
-	cmdCommitStatus.Dir = absPath
-	out, err := cmdCommitStatus.Output()
-	check(err)
-	fmt.Println(string(out))
-	allChangesCommitted, commitStatusDescription := EvaluateCommitSyncStatus(string(out))
-	statusDescription += commitStatusDescription
-
 	branchesNoRemote := false
 	branchesAhead := false
 	branchesBehind := false
-	// this command will return an output where each line will contain
-	// the status of the branch: "=" - synced, ">" - ahead, "<" - behind
-	// "" - no remote branch
-	cmdBranchStatus := exec.Command("git", "for-each-ref", "--format=%(upstream:trackshort)", "refs/heads")
-	cmdBranchStatus.Dir = absPath
-	out, err = cmdBranchStatus.Output()
-	check(err)
+
 	// remove the trailing new line from the output because otherwise
 	// it will result in a "" in slice when the output is split on \n
 	// leading to "" being evaluated as a branch as well later
-	outWithoutEndingNewLine := strings.TrimSuffix(string(out), "\n")
+	// remove trailing new line in description for prettier table printing
+	outWithoutEndingNewLine := strings.TrimSuffix(gitOut, "\n")
 	branches := strings.Split(outWithoutEndingNewLine, "\n")
 	for _, branch := range branches {
 		switch branch {
@@ -135,9 +122,31 @@ func getSyncStatus(absPath string) (bool, string) {
 	if branchesBehind {
 		statusDescription += "- has branch(es) that is/are behind\n"
 	}
-	// remove trailing new line in description for prettier table printing
-	statusDescription = strings.TrimSuffix(string(statusDescription), "\n")
 	allBranchesSynced := !branchesNoRemote && !branchesAhead && !branchesBehind
+	return allBranchesSynced, statusDescription
+}
+
+func getSyncStatus(absPath string) (bool, string) {
+	var statusDescription string
+	// returns "" for repos that have all changes committed
+	cmdCommitStatus := exec.Command("git", "status", "-s")
+	cmdCommitStatus.Dir = absPath
+	out, err := cmdCommitStatus.Output()
+	check(err)
+	allChangesCommitted, commitStatusDescription := EvaluateCommitSyncStatus(string(out))
+	statusDescription += commitStatusDescription
+
+	// this command will return an output where each line will contain
+	// the status of the branch: "=" - synced, ">" - ahead, "<" - behind
+	// "" - no remote branch
+	cmdBranchStatus := exec.Command("git", "for-each-ref", "--format=%(upstream:trackshort)", "refs/heads")
+	cmdBranchStatus.Dir = absPath
+	out, err = cmdBranchStatus.Output()
+	check(err)
+	allBranchesSynced, branchStatusDescription := EvaluateBranchSyncStatus(string(out))
+	statusDescription += branchStatusDescription
+
+	statusDescription = strings.TrimSuffix(string(statusDescription), "\n")
 	syncedWithRemote := allBranchesSynced && allChangesCommitted
 	return syncedWithRemote, statusDescription
 }
