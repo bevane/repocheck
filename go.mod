@@ -1,4 +1,4 @@
-module github.com/bevane/rpchk
+module github.com/bevane/repocheck
 
 go 1.22.3
 

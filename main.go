@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/bevane/rpchk/app"
+	"github.com/bevane/repocheck/app"
 	"os"
 )
 
