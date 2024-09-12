@@ -25,16 +25,19 @@ func TestListRepoDirectories(t *testing.T) {
 			Name:         "repo3",
 			Path:         "norepo2/repo3",
 			LastModified: modTime,
+			valid:        true,
 		},
 		{
 			Name:         "repo1",
 			Path:         "repo1",
 			LastModified: modTime,
+			valid:        true,
 		},
 		{
 			Name:         "repo2",
 			Path:         "repo2",
 			LastModified: modTime,
+			valid:        true,
 		},
 	}
 	got := ListRepoDirectories(testFsys)

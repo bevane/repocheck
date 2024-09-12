@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"strings"
 	"time"
 )
@@ -26,6 +27,7 @@ type Repo struct {
 	LastModified     time.Time
 	SyncedWithRemote bool
 	SyncDescription  string
+	valid            bool
 }
 
 func CLI() int {
@@ -43,10 +45,16 @@ func CLI() int {
 	repos := ListRepoDirectories(fsys)
 	for i := range repos {
 		absPath := filepath.Join(root, repos[i].Path)
-		check(err)
 		repos[i].AbsPath = absPath
-		repos[i].SyncedWithRemote, repos[i].SyncDescription = getSyncStatus(repos[i].AbsPath)
+		repos[i].SyncedWithRemote, repos[i].SyncDescription, err = getSyncStatus(repos[i].AbsPath)
+		if err != nil {
+			repos[i].valid = false
+		}
 	}
+	// clean up invalid repos
+	repos = slices.DeleteFunc(repos, func(repo Repo) bool {
+		return !repo.valid
+	})
 	table := constructTable(repos)
 	fmt.Printf("%v\n", table)
 	return 0
@@ -126,13 +134,19 @@ func EvaluateBranchSyncStatus(gitOut string) (bool, string) {
 	return allBranchesSynced, statusDescription
 }
 
-func getSyncStatus(absPath string) (bool, string) {
+func getSyncStatus(absPath string) (bool, string, error) {
 	var statusDescription string
 	// returns "" for repos that have all changes committed
 	cmdCommitStatus := exec.Command("git", "status", "-s")
 	cmdCommitStatus.Dir = absPath
-	out, err := cmdCommitStatus.Output()
-	check(err)
+	out, err := cmdCommitStatus.CombinedOutput()
+	if err != nil {
+		notARepo := strings.Contains(string(out), "not a git repository")
+		if notARepo {
+			return false, "", err
+		}
+		return false, fmt.Sprintf("Error: %v", string(out)), nil
+	}
 	allChangesCommitted, commitStatusDescription := EvaluateCommitSyncStatus(string(out))
 	statusDescription += commitStatusDescription
 
@@ -141,14 +155,16 @@ func getSyncStatus(absPath string) (bool, string) {
 	// "" - no remote branch
 	cmdBranchStatus := exec.Command("git", "for-each-ref", "--format=%(upstream:trackshort)", "refs/heads")
 	cmdBranchStatus.Dir = absPath
-	out, err = cmdBranchStatus.Output()
-	check(err)
+	out, err = cmdBranchStatus.CombinedOutput()
+	if err != nil {
+		return false, fmt.Sprintf("Error: %v", string(out)), nil
+	}
 	allBranchesSynced, branchStatusDescription := EvaluateBranchSyncStatus(string(out))
 	statusDescription += branchStatusDescription
 
 	statusDescription = strings.TrimSuffix(string(statusDescription), "\n")
 	syncedWithRemote := allBranchesSynced && allChangesCommitted
-	return syncedWithRemote, statusDescription
+	return syncedWithRemote, statusDescription, nil
 }
 
 func getContentLastModifiedTime(fileSystem fs.FS) time.Time {
@@ -186,6 +202,10 @@ func ListRepoDirectories(fileSystem fs.FS) []Repo {
 		subDirs, err := fs.ReadDir(fileSystem, path)
 		check(err)
 		for _, subDir := range subDirs {
+			// avoid counting dirs with .git file as a repo
+			if !subDir.IsDir() {
+				return nil
+			}
 			if subDir.Name() == ".git" {
 				dirFS, err := fs.Sub(fileSystem, path)
 				check(err)
@@ -194,6 +214,7 @@ func ListRepoDirectories(fileSystem fs.FS) []Repo {
 					Name:         d.Name(),
 					Path:         path,
 					LastModified: lastModified,
+					valid:        true,
 				})
 				// Prevent recursing through a repository directory
 				// to improve performance as it is unlikely for another
