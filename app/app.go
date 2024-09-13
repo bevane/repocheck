@@ -34,16 +34,20 @@ func CLI() int {
 	flag.Parse()
 	pathArg := flag.Arg(0)
 	var root string
-	var err error
+	wd, err := os.Getwd()
+	if err != nil {
+		errorMsg := fmt.Errorf("repocheck: Error getting working dir: %v", err)
+		fmt.Println(errorMsg)
+		return 1
+	}
 	if pathArg == "" {
-		root, err = os.Getwd()
-		if err != nil {
-			errorMsg := fmt.Errorf("repocheck: Error getting working dir: %v", err)
-			fmt.Println(errorMsg)
-			return 1
-		}
+		root = wd
 	} else {
-		root = pathArg
+		if filepath.IsAbs(pathArg) {
+			root = pathArg
+		} else {
+			root = filepath.Join(wd, pathArg)
+		}
 	}
 	fsys := os.DirFS(root)
 	repos, err := ListRepoDirectories(fsys)
@@ -91,7 +95,7 @@ func constructSummary(repos []Repo, root string) string {
 		}
 	}
 	return fmt.Sprintf(
-		"%v repos found in %v: %v is/are not synced",
+		"%v repos found in %v: %v repo(s) is/are not synced",
 		countRepos,
 		root,
 		countUnsynced,
