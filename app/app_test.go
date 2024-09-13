@@ -40,7 +40,7 @@ func TestListRepoDirectories(t *testing.T) {
 			valid:        true,
 		},
 	}
-	got, _ := ListRepoDirectories(testFsys)
+	got, _ := listRepoDirectories(testFsys)
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %v want %v", got, want)
 	}
@@ -88,7 +88,7 @@ func TestEvaluateCommitSyncStatus(t *testing.T) {
 
 		testname := fmt.Sprintf("%v", tt.gitOut)
 		t.Run(testname, func(t *testing.T) {
-			gotBool, gotString := EvaluateCommitSyncStatus(tt.gitOut)
+			gotBool, gotString := evaluateCommitSyncStatus(tt.gitOut)
 			if gotBool != tt.wantBool || gotString != tt.wantString {
 				t.Errorf(
 					"got (%v, %v) , want (%v, %v)",
@@ -119,12 +119,12 @@ func TestEvaluateBranchSyncStatus(t *testing.T) {
 		{
 			">",
 			false,
-			"- has branch(es) that is/are ahead\n",
+			"- has branch(es) that are ahead\n",
 		},
 		{
 			"<",
 			false,
-			"- has branch(es) that is/are behind\n",
+			"- has branch(es) that are behind\n",
 		},
 		{
 			"\n=",
@@ -134,7 +134,7 @@ func TestEvaluateBranchSyncStatus(t *testing.T) {
 		{
 			"\n=\n>",
 			false,
-			"- has branch(es) with no remote branch\n- has branch(es) that is/are ahead\n",
+			"- has branch(es) with no remote branch\n- has branch(es) that are ahead\n",
 		},
 	}
 
@@ -142,7 +142,7 @@ func TestEvaluateBranchSyncStatus(t *testing.T) {
 
 		testname := fmt.Sprintf("%v", tt.gitOut)
 		t.Run(testname, func(t *testing.T) {
-			gotBool, gotString := EvaluateBranchSyncStatus(tt.gitOut)
+			gotBool, gotString := evaluateBranchSyncStatus(tt.gitOut)
 			if gotBool != tt.wantBool || gotString != tt.wantString {
 				t.Errorf(
 					"got (%v, %v) , want (%v, %v)",

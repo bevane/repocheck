@@ -95,7 +95,7 @@ func constructSummary(repos []Repo, root string) string {
 		}
 	}
 	return fmt.Sprintf(
-		"%v repos found in %v: %v repo(s) is/are not synced",
+		"%v repos found in %v: %v repo(s) are not synced",
 		countRepos,
 		root,
 		countUnsynced,
@@ -169,10 +169,10 @@ func EvaluateBranchSyncStatus(gitOut string) (bool, string) {
 		statusDescription += "- has branch(es) with no remote branch\n"
 	}
 	if branchesAhead {
-		statusDescription += "- has branch(es) that is/are ahead\n"
+		statusDescription += "- has branch(es) that are ahead\n"
 	}
 	if branchesBehind {
-		statusDescription += "- has branch(es) that is/are behind\n"
+		statusDescription += "- has branch(es) that are behind\n"
 	}
 	allBranchesSynced := !branchesNoRemote && !branchesAhead && !branchesBehind
 	return allBranchesSynced, statusDescription
