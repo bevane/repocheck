@@ -214,7 +214,7 @@ func listRepoDirectories(fileSystem fs.FS) ([]Repo, error) {
 		for _, subDir := range subDirs {
 			// avoid counting dirs with .git file as a repo
 			if !subDir.IsDir() {
-				return nil
+				continue
 			}
 			if subDir.Name() == ".git" {
 				dirFS, err := fs.Sub(fileSystem, path)
