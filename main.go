@@ -1,10 +1,9 @@
 package main
 
 import (
-	"github.com/bevane/repocheck/app"
-	"os"
+	"github.com/bevane/repocheck/cmd"
 )
 
 func main() {
-	os.Exit(app.CLI())
+	cmd.Execute()
 }

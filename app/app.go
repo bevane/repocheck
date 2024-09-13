@@ -1,7 +1,6 @@
 package app
 
 import (
-	"flag"
 	"fmt"
 	"github.com/clinaresl/table"
 	"io/fs"
@@ -30,35 +29,11 @@ type Repo struct {
 	valid            bool
 }
 
-func CLI() int {
-	flag.Parse()
-	pathArg := flag.Arg(0)
-	var root string
-	wd, err := os.Getwd()
-	if err != nil {
-		errorMsg := fmt.Errorf("repocheck: Error getting working dir: %v", err)
-		fmt.Println(errorMsg)
-		return 1
-	}
-	if pathArg == "" {
-		root = wd
-	} else {
-		if filepath.IsAbs(pathArg) {
-			root = pathArg
-		} else {
-			root = filepath.Join(wd, pathArg)
-		}
-	}
+func GetRepos(root string) ([]Repo, error) {
 	fsys := os.DirFS(root)
-	repos, err := ListRepoDirectories(fsys)
+	repos, err := listRepoDirectories(fsys)
 	if err != nil {
-		errorMsg := fmt.Errorf(
-			"repocheck: cannot run check on '%v': %v",
-			root,
-			err,
-		)
-		fmt.Println(errorMsg)
-		return 1
+		return nil, err
 	}
 	for i := range repos {
 		absPath := filepath.Join(root, repos[i].Path)
@@ -72,21 +47,10 @@ func CLI() int {
 	repos = slices.DeleteFunc(repos, func(repo Repo) bool {
 		return !repo.valid
 	})
-	table, err := constructTable(repos)
-	if err != nil {
-		errorMsg := fmt.Errorf(
-			"repocheck: error constructing table: %v",
-			err,
-		)
-		fmt.Println(errorMsg)
-		return 1
-	}
-	summary := constructSummary(repos, root)
-	fmt.Printf("%v\n%v\n", table, summary)
-	return 0
+	return repos, nil
 }
 
-func constructSummary(repos []Repo, root string) string {
+func ConstructSummary(repos []Repo, root string) string {
 	countRepos := len(repos)
 	var countUnsynced int
 	for _, repo := range repos {
@@ -102,7 +66,7 @@ func constructSummary(repos []Repo, root string) string {
 	)
 }
 
-func constructTable(repos []Repo) (*table.Table, error) {
+func ConstructTable(repos []Repo) (*table.Table, error) {
 	t, err := table.NewTable("| C{15} | L{20} | c | c | L{27} |")
 	if err != nil {
 		return nil, err
@@ -133,7 +97,7 @@ func constructTable(repos []Repo) (*table.Table, error) {
 
 }
 
-func EvaluateCommitSyncStatus(gitOut string) (bool, string) {
+func evaluateCommitSyncStatus(gitOut string) (bool, string) {
 	if gitOut == "" {
 		return true, ""
 	} else {
@@ -142,7 +106,7 @@ func EvaluateCommitSyncStatus(gitOut string) (bool, string) {
 
 }
 
-func EvaluateBranchSyncStatus(gitOut string) (bool, string) {
+func evaluateBranchSyncStatus(gitOut string) (bool, string) {
 	var statusDescription string
 	branchesNoRemote := false
 	branchesAhead := false
@@ -191,7 +155,7 @@ func getSyncStatus(absPath string) (bool, string, error) {
 		}
 		return false, fmt.Sprintf("Error: %v", string(out)), nil
 	}
-	allChangesCommitted, commitStatusDescription := EvaluateCommitSyncStatus(string(out))
+	allChangesCommitted, commitStatusDescription := evaluateCommitSyncStatus(string(out))
 	statusDescription += commitStatusDescription
 
 	// this command will return an output where each line will contain
@@ -203,7 +167,7 @@ func getSyncStatus(absPath string) (bool, string, error) {
 	if err != nil {
 		return false, fmt.Sprintf("Error: %v", string(out)), nil
 	}
-	allBranchesSynced, branchStatusDescription := EvaluateBranchSyncStatus(string(out))
+	allBranchesSynced, branchStatusDescription := evaluateBranchSyncStatus(string(out))
 	statusDescription += branchStatusDescription
 
 	statusDescription = strings.TrimSuffix(string(statusDescription), "\n")
@@ -236,7 +200,7 @@ func getContentLastModifiedTime(fileSystem fs.FS) time.Time {
 	return lastModified
 }
 
-func ListRepoDirectories(fileSystem fs.FS) ([]Repo, error) {
+func listRepoDirectories(fileSystem fs.FS) ([]Repo, error) {
 	var repoDirectories []Repo
 	err := fs.WalkDir(fileSystem, ".", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
