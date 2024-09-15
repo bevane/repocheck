@@ -18,6 +18,10 @@ var rootCmd = &cobra.Command{
 	RunE:  repocheckCmd,
 }
 
+func init() {
+	rootCmd.Flags().StringVarP(&SortKey, "sort", "s", "lastmodified", "Key to sort the results by. Options: lastmodified | name | path | synced")
+}
+
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -26,6 +30,14 @@ func Execute() {
 }
 
 func repocheckCmd(cmd *cobra.Command, args []string) error {
+	var selectedSortFunc app.SortFunc
+	if SortKey != "" {
+		var err error
+		selectedSortFunc, err = app.GetSortRepoFunc(SortKey)
+		if err != nil {
+			return fmt.Errorf("repocheck: %v", err)
+		}
+	}
 	var root string
 	wd, err := os.Getwd()
 	if err != nil {
@@ -51,6 +63,9 @@ func repocheckCmd(cmd *cobra.Command, args []string) error {
 			root,
 			err,
 		)
+	}
+	if selectedSortFunc != nil {
+		selectedSortFunc(repos, false)
 	}
 	table, err := app.ConstructTable(repos)
 	if err != nil {
