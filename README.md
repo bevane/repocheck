@@ -59,5 +59,11 @@ sync status or last modified date
 - [ ] Add flag for json output
 - [ ] Add head and tail flag to limit output
 
+# Discussions
+
+Interested in this project and have requests for specific features or want to discuss about this repo?
+Let me know in [discussions](https://github.com/bevane/repocheck/discussions)
+
+
 # License
 Repo Check is released under the MIT License
