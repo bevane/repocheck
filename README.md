@@ -34,15 +34,27 @@ Target directory can be passed in as an arg either as a relative path or an abso
 
 ### Additional flags
 
+#### Sort
 Sort flag `-s` or `--sort` can be used to sort the results by a specific key
 
 `repocheck --sort=name` to sort by repo name
 
 `repocheck -s=synced` to sort by sync status of the repo - unsynced repos will be at the top
 
+#### Filter
+Filter flag `-F` or `--filter` can be used to filter the results by either
+sync status or last modified date
+
+`repocheck --filter synced=yes` to only show repos that are synced
+
+`repocheck -F lastmodified=2024-01-01` to only show repos that were last modified on 2024-01-01
+
+
+`repocheck -F "lastmodified>=2024-01-01"` to only show repos that were last modified on or later than 2024-01-01
+
+*Note: for options containing '<' or '>' surround the entire filter option with quotes to prevent them from being interpreted as operators by bash*
 
 # Planned features
-- [ ] Add flag to filter the results by last modified date and sync status
 - [ ] Add flag for plain output to only output the absolute paths of the repos
 - [ ] Add flag for json output
 - [ ] Add head and tail flag to limit output
