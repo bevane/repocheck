@@ -13,8 +13,8 @@ var FilterQuery string
 
 var rootCmd = &cobra.Command{
 	Use:   "repocheck",
-	Short: "repocheck is a cli tool show repos and info about them in a directory",
-	Long:  "repocheck is a cli tool show repos and info about them in a directory - see info for each repo such as absolute path of repo, last modified date, whether repo is synced with remote (whether it has uncommited changtes or branches that are ahead etc.)",
+	Short: "repocheck is a cli tool to show repos in a directory and info about them",
+	Long:  "repocheck is a cli tool to show repos in a directory and info about them - see info for each repo such as absolute path of repo, last modified date, whether repo is synced with remote (whether it has uncommited changes or branches that are ahead etc.)",
 	Args:  cobra.MaximumNArgs(1),
 	RunE:  repocheckCmd,
 }
