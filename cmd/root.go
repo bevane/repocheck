@@ -9,6 +9,7 @@ import (
 )
 
 var SortKey string
+var FilterQuery string
 
 var rootCmd = &cobra.Command{
 	Use:   "repocheck",
@@ -20,6 +21,7 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	rootCmd.Flags().StringVarP(&SortKey, "sort", "s", "lastmodified", "Key to sort the results by. Options: lastmodified | name | path | synced")
+	rootCmd.Flags().StringVarP(&FilterQuery, "filter", "F", "", "key/value to filter results by. Examples: --filter synced=no | -F lastmodified=2024-01-20 | -F \"lastmodified<2024-01-15\" | -F \"lastmodified>=2023-12-22\"\nNote: surround any filters containing < or > with quotes")
 }
 
 func Execute() {
@@ -31,9 +33,23 @@ func Execute() {
 
 func repocheckCmd(cmd *cobra.Command, args []string) error {
 	var selectedSortFunc app.SortFunc
+	var selectedFilterStrategy app.FilterStrategy
+	var err error
 	if SortKey != "" {
-		var err error
 		selectedSortFunc, err = app.GetSortRepoFunc(SortKey)
+		if err != nil {
+			return fmt.Errorf("repocheck: %v", err)
+		}
+	}
+	if FilterQuery != "" {
+		selectedFilterStrategy, err = app.GetFilterStrategy(FilterQuery)
+		if err != nil {
+			return fmt.Errorf("repocheck: %v", err)
+		}
+		// validate the query value that will be passed into the filter
+		// as well to catch any invalid query value error early before
+		// the rest of the execution of the command
+		err = selectedFilterStrategy.ValidateQuery(FilterQuery)
 		if err != nil {
 			return fmt.Errorf("repocheck: %v", err)
 		}
@@ -63,6 +79,12 @@ func repocheckCmd(cmd *cobra.Command, args []string) error {
 			root,
 			err,
 		)
+	}
+	if selectedFilterStrategy != nil {
+		repos, err = selectedFilterStrategy.Apply(repos, FilterQuery)
+		if err != nil {
+			return fmt.Errorf("repocheck: %v", err)
+		}
 	}
 	if selectedSortFunc != nil {
 		selectedSortFunc(repos, false)
