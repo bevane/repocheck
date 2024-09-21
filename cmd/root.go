@@ -32,28 +32,7 @@ func Execute() {
 }
 
 func repocheckCmd(cmd *cobra.Command, args []string) error {
-	var selectedSortFunc app.SortFunc
-	var selectedFilterStrategy app.FilterStrategy
 	var err error
-	if SortKey != "" {
-		selectedSortFunc, err = app.GetSortRepoFunc(SortKey)
-		if err != nil {
-			return fmt.Errorf("repocheck: %v", err)
-		}
-	}
-	if FilterQuery != "" {
-		selectedFilterStrategy, err = app.GetFilterStrategy(FilterQuery)
-		if err != nil {
-			return fmt.Errorf("repocheck: %v", err)
-		}
-		// validate the query value that will be passed into the filter
-		// as well to catch any invalid query value error early before
-		// the rest of the execution of the command
-		err = selectedFilterStrategy.ValidateQuery(FilterQuery)
-		if err != nil {
-			return fmt.Errorf("repocheck: %v", err)
-		}
-	}
 	var root string
 	wd, err := os.Getwd()
 	if err != nil {
@@ -79,15 +58,6 @@ func repocheckCmd(cmd *cobra.Command, args []string) error {
 			root,
 			err,
 		)
-	}
-	if selectedFilterStrategy != nil {
-		repos, err = selectedFilterStrategy.Apply(repos, FilterQuery)
-		if err != nil {
-			return fmt.Errorf("repocheck: %v", err)
-		}
-	}
-	if selectedSortFunc != nil {
-		selectedSortFunc(repos, false)
 	}
 	table, err := app.ConstructTable(repos)
 	if err != nil {
