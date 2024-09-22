@@ -255,3 +255,22 @@ func ValidateQueries(q queries) error {
 	}
 	return nil
 }
+
+func ApplyQueries(q queries, repos *[]Repo) error {
+	var err error
+	v := reflect.ValueOf(q)
+	for i := 0; i < v.NumField(); i++ {
+		query := v.Field(i).Interface().(query)
+		// ignore queries where the value has not been set
+		// indicating that the flag for the query was not used
+		if query.value() == "" {
+			continue
+		}
+		executor := v.Field(i).Interface().(executor)
+		err = executor.apply(repos)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}

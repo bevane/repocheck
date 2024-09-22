@@ -217,6 +217,27 @@ func TestValidateQueriesError(t *testing.T) {
 	}
 }
 
+func TestAppplyQueries(t *testing.T) {
+	queries := NewQueries()
+	queries.Synced.Value = "y"
+	queries.LastModified.Value = ">=2024-01-02"
+	queries.Sort.Value = "name"
+
+	repos := getInputRepos()
+	want := getApplyQueriesResult()
+
+	err := ApplyQueries(queries, &repos)
+
+	// ApplyQueries mutates the repos passed in
+	if !reflect.DeepEqual(repos, want) || err != nil {
+		t.Errorf(
+			"got (%v, %v)\nwant (%v, %v)",
+			repos, err,
+			want, nil,
+		)
+	}
+}
+
 func getInputRepos() []Repo {
 	// helper to provide fake input to test the sortFunc
 	return []Repo{
@@ -652,4 +673,39 @@ func getFilteredOutputLastModified(key string) []Repo {
 		">2024-01-03":  filteredByLastModifiedGRTjan3,
 	}
 	return outputOptions[key]
+}
+
+func getApplyQueriesResult() []Repo {
+	// Filtered by synced yes
+	// Filtered by lastmodified >= jan2
+	// Sorted by Name
+	return []Repo{
+		{
+			"b",
+			"repos/b",
+			"/home/user/repos/y/b",
+			jan4,
+			true,
+			"",
+			true,
+		},
+		{
+			"d",
+			"repos/d",
+			"/home/user/repos/w/d",
+			jan2,
+			true,
+			"",
+			true,
+		},
+		{
+			"e",
+			"repos/e",
+			"/home/user/repos/x/e",
+			jan3a,
+			true,
+			"",
+			true,
+		},
+	}
 }
