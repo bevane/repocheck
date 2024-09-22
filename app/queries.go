@@ -2,28 +2,34 @@ package app
 
 import (
 	"fmt"
+	"reflect"
 	"slices"
 	"strings"
 	"time"
 )
 
-type Transformer interface {
+type validator interface {
 	validate() error
+}
+
+type executor interface {
 	apply(*[]Repo) error
 }
 
-type Queries struct {
+// this interface is needed to get the value for each query in the
+// validateQueries and applyQueries functions to make accessing the query's
+// value field value simpler
+type query interface {
+	value() string
+}
+
+type queries struct {
 	Sort         sorter
 	LastModified lastModifiedFilter
 	Synced       syncedFilter
 }
 
 type sortFunc func([]Repo)
-
-type sorter struct {
-	Value        string
-	validOptions map[string]sortFunc
-}
 
 func sortByName(repos []Repo) {
 	slices.SortStableFunc(repos, func(a, b Repo) int {
@@ -58,6 +64,15 @@ func sortBySyncStatus(repos []Repo) {
 	})
 }
 
+type sorter struct {
+	Value        string
+	validOptions map[string]sortFunc
+}
+
+func (s sorter) value() string {
+	return s.Value
+}
+
 func (s sorter) validate() error {
 	_, ok := s.validOptions[s.Value]
 	if !ok {
@@ -87,6 +102,10 @@ func (s sorter) apply(repos *[]Repo) error {
 
 type syncedFilter struct {
 	Value string
+}
+
+func (s syncedFilter) value() string {
+	return s.Value
 }
 
 func (s syncedFilter) validate() error {
@@ -122,6 +141,10 @@ func (s syncedFilter) apply(repos *[]Repo) error {
 
 type lastModifiedFilter struct {
 	Value string
+}
+
+func (s lastModifiedFilter) value() string {
+	return s.Value
 }
 
 func (l lastModifiedFilter) validate() error {
@@ -205,11 +228,30 @@ func (l lastModifiedFilter) apply(repos *[]Repo) error {
 	return nil
 }
 
-func NewQueries() *Queries {
-	return &Queries{Sort: sorter{validOptions: map[string]sortFunc{
+func NewQueries() queries {
+	return queries{Sort: sorter{validOptions: map[string]sortFunc{
 		"name":         sortByName,
 		"path":         sortByPath,
 		"lastmodified": sortByLastModified,
 		"synced":       sortBySyncStatus,
 	}}}
+}
+
+func ValidateQueries(q queries) error {
+	var err error
+	v := reflect.ValueOf(q)
+	for i := 0; i < v.NumField(); i++ {
+		query := v.Field(i).Interface().(query)
+		// ignore queries where the value has not been set
+		// indicating that the flag for the query was not used
+		if query.value() == "" {
+			continue
+		}
+		validator := v.Field(i).Interface().(validator)
+		err = validator.validate()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
