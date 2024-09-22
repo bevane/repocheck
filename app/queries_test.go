@@ -15,7 +15,7 @@ var (
 	jan4, _  = time.Parse(time.DateOnly, "2024-01-04")
 )
 
-var queries = NewQueries()
+var testQueries = NewQueries()
 
 var sortTests = []struct {
 	key  string
@@ -43,9 +43,9 @@ func TestSort(t *testing.T) {
 	for _, test := range sortTests {
 		testname := fmt.Sprintf("%v", test.key)
 		t.Run(testname, func(t *testing.T) {
-			queries.Sort.Value = test.key
+			testQueries.Sort.Value = test.key
 			repos := getInputRepos()
-			err := queries.Sort.apply(&repos)
+			err := testQueries.Sort.apply(&repos)
 			// the apply function  mutates the input hence the input itself is compared with want
 			if !reflect.DeepEqual(repos, test.want) || err != nil {
 				t.Errorf(
@@ -60,8 +60,8 @@ func TestSort(t *testing.T) {
 
 func TestSortError(t *testing.T) {
 	wantE := fmt.Errorf("invalid is not a valid sort option. Options: lastmodified | name | path | synced")
-	queries.Sort.Value = "invalid"
-	gotE := queries.Sort.validate()
+	testQueries.Sort.Value = "invalid"
+	gotE := testQueries.Sort.validate()
 	if gotE == nil || gotE.Error() != wantE.Error() {
 		t.Errorf(
 			"got (%v)\nwant (%v)",
@@ -96,9 +96,9 @@ func TestSyncedFilter(t *testing.T) {
 	for _, test := range syncedFilterTests {
 		testname := fmt.Sprintf("%v", test.key)
 		t.Run(testname, func(t *testing.T) {
-			queries.Synced.Value = test.key
+			testQueries.Synced.Value = test.key
 			repos := getInputRepos()
-			err := queries.Synced.apply(&repos)
+			err := testQueries.Synced.apply(&repos)
 			// the apply function  mutates the input hence the input itself is compared with want
 			if !reflect.DeepEqual(repos, test.want) || err != nil {
 				t.Errorf(
@@ -113,8 +113,8 @@ func TestSyncedFilter(t *testing.T) {
 
 func TestSyncedFilterError(t *testing.T) {
 	wantE := fmt.Errorf("incorrect value for synced, value must be either 'yes', 'y', 'no' or 'n'")
-	queries.Synced.Value = "invalid"
-	gotE := queries.Synced.validate()
+	testQueries.Synced.Value = "invalid"
+	gotE := testQueries.Synced.validate()
 	if gotE == nil || gotE.Error() != wantE.Error() {
 		t.Errorf(
 			"got (%v)\nwant (%v)",
@@ -153,9 +153,9 @@ func TestLastModifiedFilter(t *testing.T) {
 	for _, test := range lastmodifiedFilterTests {
 		testname := fmt.Sprintf("%v", test.key)
 		t.Run(testname, func(t *testing.T) {
-			queries.LastModified.Value = test.key
+			testQueries.LastModified.Value = test.key
 			repos := getInputRepos()
-			err := queries.LastModified.apply(&repos)
+			err := testQueries.LastModified.apply(&repos)
 			// the apply function  mutates the input hence the input itself is compared with want
 			if !reflect.DeepEqual(repos, test.want) || err != nil {
 				t.Errorf(
@@ -170,13 +170,50 @@ func TestLastModifiedFilter(t *testing.T) {
 
 func TestLastModifiedFilterError(t *testing.T) {
 	wantE := fmt.Errorf("unexpected date invalid, date must be in the format yyyy-mm-dd and can only be prefixed with '<=', '>=', '<' or '>'")
-	queries.LastModified.Value = "invalid"
-	gotE := queries.LastModified.validate()
+	testQueries.LastModified.Value = "invalid"
+	gotE := testQueries.LastModified.validate()
 	if gotE == nil || gotE.Error() != wantE.Error() {
 		t.Errorf(
 			"got (%v)\nwant (%v)",
 			gotE, wantE,
 		)
+	}
+}
+
+func TestValidateQueries(t *testing.T) {
+	emptyQueries := NewQueries()
+	validQueries := NewQueries()
+	validQueries.Sort.Value = "name"
+	validQueries.Synced.Value = "y"
+	validQueries.LastModified.Value = ">=2024-01-01"
+	emptyAndValidQueries := NewQueries()
+	emptyAndValidQueries.Synced.Value = "no"
+
+	var tests = []queries{
+		emptyQueries,
+		validQueries,
+		emptyAndValidQueries,
+	}
+
+	for _, test := range tests {
+		testname := fmt.Sprintf("%v", test)
+		t.Run(testname, func(t *testing.T) {
+			err := ValidateQueries(test)
+			if err != nil {
+				t.Errorf("got (%v)\nwant (%v)", err, nil)
+			}
+		})
+	}
+}
+
+func TestValidateQueriesError(t *testing.T) {
+	invalidQueries := NewQueries()
+	invalidQueries.LastModified.Value = ">=2024-23-01"
+
+	wantE := fmt.Errorf("unexpected date 2024-23-01, date must be in the format yyyy-mm-dd and can only be prefixed with '<=', '>=', '<' or '>'")
+	gotE := ValidateQueries(invalidQueries)
+	if gotE == nil || gotE.Error() != wantE.Error() {
+		t.Errorf("got (%v)\nwant (%v)", gotE, wantE)
 	}
 }
 
@@ -616,4 +653,3 @@ func getFilteredOutputLastModified(key string) []Repo {
 	}
 	return outputOptions[key]
 }
-
