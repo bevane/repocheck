@@ -17,16 +17,17 @@ type executor interface {
 }
 
 // this interface is needed to get the value for each query in the
-// validateQueries and applyQueries functions to make accessing the query's
+// validateQueries and applyQueries functions, making the access of the query's
 // value field value simpler
 type query interface {
 	value() string
 }
 
 type queries struct {
-	Sort         sorter
+	// place sort at the end for better efficiency
 	LastModified lastModifiedFilter
 	Synced       syncedFilter
+	Sort         sorter
 }
 
 type sortFunc func([]Repo)
