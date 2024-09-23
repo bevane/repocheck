@@ -75,7 +75,7 @@ func (s sorter) value() string {
 }
 
 func (s sorter) validate() error {
-	_, ok := s.validOptions[s.Value]
+	_, ok := s.validOptions[strings.ToLower(s.Value)]
 	if !ok {
 		var validOptions []string
 		for key := range s.validOptions {
@@ -96,7 +96,7 @@ func (s sorter) apply(repos *[]Repo) error {
 		return err
 	}
 	// select the appropriate sort function based on flag value
-	sort := s.validOptions[s.Value]
+	sort := s.validOptions[strings.ToLower(s.Value)]
 	sort(*repos)
 	return nil
 }
@@ -110,10 +110,11 @@ func (s syncedFilter) value() string {
 }
 
 func (s syncedFilter) validate() error {
-	if s.Value != "yes" &&
-		s.Value != "y" &&
-		s.Value != "no" &&
-		s.Value != "n" {
+	value := strings.ToLower(s.Value)
+	if value != "yes" &&
+		value != "y" &&
+		value != "no" &&
+		value != "n" {
 		return fmt.Errorf("incorrect value for synced, value must be either 'yes', 'y', 'no' or 'n'")
 	}
 	return nil
@@ -124,8 +125,9 @@ func (s syncedFilter) apply(repos *[]Repo) error {
 	if err != nil {
 		return err
 	}
+	value := strings.ToLower(s.Value)
 	var queryBool bool
-	if s.Value == "yes" || s.Value == "y" {
+	if value == "yes" || value == "y" {
 		queryBool = true
 	} else {
 		queryBool = false
