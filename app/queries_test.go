@@ -189,7 +189,7 @@ func TestValidateQueries(t *testing.T) {
 	emptyAndValidQueries := NewQueries()
 	emptyAndValidQueries.Synced.Value = "no"
 
-	var tests = []queries{
+	var tests = []*queries{
 		emptyQueries,
 		validQueries,
 		emptyAndValidQueries,

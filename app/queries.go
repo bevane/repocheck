@@ -228,8 +228,8 @@ func (l lastModifiedFilter) apply(repos *[]Repo) error {
 	return nil
 }
 
-func NewQueries() queries {
-	return queries{Sort: sorter{validOptions: map[string]sortFunc{
+func NewQueries() *queries {
+	return &queries{Sort: sorter{validOptions: map[string]sortFunc{
 		"name":         sortByName,
 		"path":         sortByPath,
 		"lastmodified": sortByLastModified,
@@ -237,9 +237,9 @@ func NewQueries() queries {
 	}}}
 }
 
-func ValidateQueries(q queries) error {
+func ValidateQueries(q *queries) error {
 	var err error
-	v := reflect.ValueOf(q)
+	v := reflect.ValueOf(*q)
 	for i := 0; i < v.NumField(); i++ {
 		query := v.Field(i).Interface().(query)
 		// ignore queries where the value has not been set
@@ -256,9 +256,9 @@ func ValidateQueries(q queries) error {
 	return nil
 }
 
-func ApplyQueries(q queries, repos *[]Repo) error {
+func ApplyQueries(q *queries, repos *[]Repo) error {
 	var err error
-	v := reflect.ValueOf(q)
+	v := reflect.ValueOf(*q)
 	for i := 0; i < v.NumField(); i++ {
 		query := v.Field(i).Interface().(query)
 		// ignore queries where the value has not been set
