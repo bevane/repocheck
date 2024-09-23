@@ -8,8 +8,7 @@ import (
 	"path/filepath"
 )
 
-var SortKey string
-var FilterQuery string
+var opt = app.NewQueries()
 
 var rootCmd = &cobra.Command{
 	Use:   "repocheck",
@@ -20,8 +19,9 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.Flags().StringVarP(&SortKey, "sort", "s", "lastmodified", "Key to sort the results by. Options: lastmodified | name | path | synced")
-	rootCmd.Flags().StringVarP(&FilterQuery, "filter", "F", "", "key/value to filter results by. Examples: --filter synced=no | -F lastmodified=2024-01-20 | -F \"lastmodified<2024-01-15\" | -F \"lastmodified>=2023-12-22\"\nNote: surround any filters containing < or > with quotes")
+	rootCmd.Flags().StringVarP(&opt.Sort.Value, "sort", "s", "lastmodified", "Key to sort the results by. Example: '-s name'. Options: lastmodified | name | path | synced")
+	rootCmd.Flags().StringVarP(&opt.Synced.Value, "synced", "S", "", "Filter results by synced status of repo. Example: '-S y' | '-S no'")
+	rootCmd.Flags().StringVarP(&opt.LastModified.Value, "lastmodified", "L", "", "Filter results by last modified date of repo. Examples: '-L 2024-01-20' | '--lastmodified \"<2024-01-15\"' | '-L \">=2023-12-22\"'\nNote: surround any filters containing < or > with quotes")
 }
 
 func Execute() {
@@ -34,6 +34,12 @@ func Execute() {
 func repocheckCmd(cmd *cobra.Command, args []string) error {
 	var err error
 	var root string
+	// run validation of flag values in the beginning before proceeding
+	// further
+	err = app.ValidateQueries(opt)
+	if err != nil {
+		return fmt.Errorf("repocheck: %v", err)
+	}
 	wd, err := os.Getwd()
 	if err != nil {
 		return fmt.Errorf("repocheck: error getting working dir: %v", err)
@@ -49,15 +55,16 @@ func repocheckCmd(cmd *cobra.Command, args []string) error {
 		}
 	}
 	repos, err := app.GetRepos(root)
-	switch SortKey {
-	case "name":
-	}
 	if err != nil {
 		return fmt.Errorf(
 			"repocheck: cannot run check on '%v': %v",
 			root,
 			err,
 		)
+	}
+	err = app.ApplyQueries(opt, &repos)
+	if err != nil {
+		return fmt.Errorf("repocheck: %v", err)
 	}
 	table, err := app.ConstructTable(repos)
 	if err != nil {
