@@ -41,13 +41,10 @@ func TestMain(m *testing.M) {
 }
 
 func TestRepoCheckNoFlags(t *testing.T) {
-	var out []byte
-	var cmd *exec.Cmd
-
 	// root contains the fake repos that have been set up in TestMain
 	// ./repocheck is also built in setup
-	cmd = exec.Command("./repocheck", root)
-	out, _ = cmd.CombinedOutput()
+	cmd := exec.Command("./repocheck", root)
+	out, _ := cmd.CombinedOutput()
 	got := string(out)
 	want := getCLIOutSnapshot()
 	if got != want {
