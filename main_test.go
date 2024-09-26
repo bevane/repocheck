@@ -107,10 +107,16 @@ func initFakeRepos(root string) error {
 		if string(out) == "" {
 			// set test credentials if no credentials are found in git config
 			// to avoid errors due to missing credentials
-			cmd = exec.Command("git", "config", "--global", "user.name", "Test")
-			cmd.Output()
-			cmd = exec.Command("git", "config", "--global", "user.email", "test@github.com")
-			cmd.Output()
+			cmd = exec.Command("git", "config", "--global", "user.name", "\"Test\"")
+			out, err = cmd.CombinedOutput()
+			if err != nil {
+				return fmt.Errorf("%v: %v", err, string(out))
+			}
+			cmd = exec.Command("git", "config", "--global", "user.email", "\"test@github.com\"")
+			out, err = cmd.CombinedOutput()
+			if err != nil {
+				return fmt.Errorf("%v: %v", err, string(out))
+			}
 		}
 
 		cmd = exec.Command("git", "init", "--bare")
