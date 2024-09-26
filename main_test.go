@@ -85,6 +85,23 @@ func initFakeRepos(root string) error {
 	var cmd *exec.Cmd
 	var out []byte
 	repos := []string{"a", "b", "c"}
+	cmd = exec.Command("git", "config", "user.name")
+
+	out, _ = cmd.CombinedOutput()
+	if string(out) == "" {
+		// set test credentials if no credentials are found in git config
+		// to avoid errors due to missing credentials
+		cmd = exec.Command("git", "config", "--global", "user.name", "'Test'")
+		out, err = cmd.CombinedOutput()
+		if err != nil {
+			return fmt.Errorf("%v: %v", err, string(out))
+		}
+		cmd = exec.Command("git", "config", "--global", "user.email", "'test@github.com'")
+		out, err = cmd.CombinedOutput()
+		if err != nil {
+			return fmt.Errorf("%v: %v", err, string(out))
+		}
+	}
 	for _, repo := range repos {
 		remotePath := filepath.Join(root, "remote", repo)
 		localPath := filepath.Join(root, "local", repo)
@@ -96,27 +113,6 @@ func initFakeRepos(root string) error {
 		err = os.MkdirAll(localPath, 0755)
 		if err != nil {
 			return err
-		}
-
-		cmd = exec.Command("git", "config", "user.name")
-		out, err = cmd.CombinedOutput()
-		if err != nil {
-			return fmt.Errorf("%v: %v", err, string(out))
-		}
-
-		if string(out) == "" {
-			// set test credentials if no credentials are found in git config
-			// to avoid errors due to missing credentials
-			cmd = exec.Command("git", "config", "--global", "user.name", "\"Test\"")
-			out, err = cmd.CombinedOutput()
-			if err != nil {
-				return fmt.Errorf("%v: %v", err, string(out))
-			}
-			cmd = exec.Command("git", "config", "--global", "user.email", "\"test@github.com\"")
-			out, err = cmd.CombinedOutput()
-			if err != nil {
-				return fmt.Errorf("%v: %v", err, string(out))
-			}
 		}
 
 		cmd = exec.Command("git", "init", "--bare")
