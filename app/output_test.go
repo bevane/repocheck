@@ -6,9 +6,6 @@ import (
 	"testing"
 )
 
-func TestPlainOutput(t *testing.T) {
-}
-
 var TSVTests = []struct {
 	key   string
 	input []Repo
