@@ -37,27 +37,43 @@ Target directory can be passed in as an arg either as a relative path or an abso
 #### Sort
 Sort flag `-s` or `--sort` can be used to sort the results by a specific key
 
-`repocheck --sort=name` to sort by repo name
+`repocheck --sort name` to sort by repo name
 
-`repocheck -s=synced` to sort by sync status of the repo - unsynced repos will be at the top
+`repocheck -s synced` to sort by sync status of the repo - unsynced repos will be at the top
 
-#### Filter
-Filter flag `-F` or `--filter` can be used to filter the results by either
-sync status or last modified date
+#### Filters
+Supported filter flags:
+- `-L` or `--lastmodified` - filter results by repos that were last modified on, before or after a certain date
+- `-S` or `--synced` - filter results by synced status of repo
 
-`repocheck --filter synced=yes` to only show repos that are synced
+**Examples**
 
-`repocheck -F lastmodified=2024-01-01` to only show repos that were last modified on 2024-01-01
+`repocheck --synced y` to only show repos that are synced
 
+`repocheck --lastmodified 2024-01-01` to only show repos that were last modified on 2024-01-01
 
-`repocheck -F "lastmodified>=2024-01-01"` to only show repos that were last modified on or later than 2024-01-01
+`repocheck --lastmodified ">=2024-01-01"` to only show repos that were last modified on or later than 2024-01-01
 
-*Note: for options containing '<' or '>' surround the entire filter option with quotes to prevent them from being interpreted as operators by bash*
+Multiple filters can be combined:
 
-# Planned features
-- [ ] Add flag for plain output to only output the absolute paths of the repos
-- [ ] Add flag for json output
-- [ ] Add head and tail flag to limit output
+`repocheck -L "<2024-01-01" -S n` to only show unsynced repos that were last modified before 2024-01-01
+
+*Note: for options containing '<' or '>' surround the entire query with quotes to prevent them from being interpreted as operators by bash*
+
+#### Output formatting
+By default, repocheck will output the results in a pretty human-readable table.
+Repocheck also supports output flags to change the output format
+
+Supported output flags:
+- `-t` or `--tsv` - to output results as tab separated values that are machine-readable
+
+**Examples**
+
+Machine-readable output can be piped to other command line utilities:
+
+`repocheck --tsv | cut -f2` to show only the second column of the results i.e the path data for each repo
+
+`repocheck --tsv | grep exercises` to only show lines containing "exercises"
 
 # Discussions
 
