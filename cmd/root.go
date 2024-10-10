@@ -10,6 +10,7 @@ import (
 
 var opt = app.NewQueries()
 var plainOutput bool
+var tsvOutput bool
 
 var rootCmd = &cobra.Command{
 	Use:   "repocheck",
@@ -24,6 +25,7 @@ func init() {
 	rootCmd.Flags().StringVarP(&opt.Synced.Value, "synced", "S", "", "Filter results by synced status of repo. Example: '-S y' | '-S no'")
 	rootCmd.Flags().StringVarP(&opt.LastModified.Value, "lastmodified", "L", "", "Filter results by last modified date of repo. Examples: '-L 2024-01-20' | '--lastmodified \"<2024-01-15\"' | '-L \">=2023-12-22\"'\nNote: surround any filters containing < or > with quotes")
 	rootCmd.Flags().BoolVarP(&plainOutput, "plain", "p", false, "Enable verbose output")
+	rootCmd.Flags().BoolVarP(&tsvOutput, "tsv", "t", false, "Output in tab separated values form")
 }
 
 func Execute() {
@@ -72,6 +74,8 @@ func repocheckCmd(cmd *cobra.Command, args []string) error {
 	switch {
 	case plainOutput:
 		output = app.ConstructPlainTable(repos)
+	case tsvOutput:
+		output = app.ConstructTSVOutput(repos)
 	default:
 		table, err := app.ConstructTable(repos)
 		if err != nil {
