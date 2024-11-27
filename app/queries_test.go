@@ -248,7 +248,6 @@ func getInputRepos() []Repo {
 			jan3a,
 			true,
 			"",
-			true,
 		},
 		{
 			"b",
@@ -257,7 +256,6 @@ func getInputRepos() []Repo {
 			jan4,
 			true,
 			"",
-			true,
 		},
 		{
 			"c",
@@ -266,7 +264,6 @@ func getInputRepos() []Repo {
 			jan1,
 			false,
 			"",
-			true,
 		},
 		{
 			"d",
@@ -275,7 +272,6 @@ func getInputRepos() []Repo {
 			jan2,
 			true,
 			"",
-			true,
 		},
 		{
 			"a",
@@ -284,7 +280,6 @@ func getInputRepos() []Repo {
 			jan3,
 			false,
 			"",
-			true,
 		},
 	}
 }
@@ -299,7 +294,6 @@ func getSortedOutput(key string) []Repo {
 			jan3,
 			false,
 			"",
-			true,
 		},
 		{
 			"b",
@@ -308,7 +302,6 @@ func getSortedOutput(key string) []Repo {
 			jan4,
 			true,
 			"",
-			true,
 		},
 		{
 			"c",
@@ -317,7 +310,6 @@ func getSortedOutput(key string) []Repo {
 			jan1,
 			false,
 			"",
-			true,
 		},
 		{
 			"d",
@@ -326,7 +318,6 @@ func getSortedOutput(key string) []Repo {
 			jan2,
 			true,
 			"",
-			true,
 		},
 		{
 			"e",
@@ -335,7 +326,6 @@ func getSortedOutput(key string) []Repo {
 			jan3a,
 			true,
 			"",
-			true,
 		},
 	}
 	sortedByAbsPath := []Repo{
@@ -346,7 +336,6 @@ func getSortedOutput(key string) []Repo {
 			jan2,
 			true,
 			"",
-			true,
 		},
 		{
 			"a",
@@ -355,7 +344,6 @@ func getSortedOutput(key string) []Repo {
 			jan3,
 			false,
 			"",
-			true,
 		},
 		{
 			"e",
@@ -364,7 +352,6 @@ func getSortedOutput(key string) []Repo {
 			jan3a,
 			true,
 			"",
-			true,
 		},
 		{
 			"b",
@@ -373,7 +360,6 @@ func getSortedOutput(key string) []Repo {
 			jan4,
 			true,
 			"",
-			true,
 		},
 		{
 			"c",
@@ -382,7 +368,6 @@ func getSortedOutput(key string) []Repo {
 			jan1,
 			false,
 			"",
-			true,
 		},
 	}
 	sortedByLastModified := []Repo{
@@ -393,7 +378,6 @@ func getSortedOutput(key string) []Repo {
 			jan1,
 			false,
 			"",
-			true,
 		},
 		{
 			"d",
@@ -402,7 +386,6 @@ func getSortedOutput(key string) []Repo {
 			jan2,
 			true,
 			"",
-			true,
 		},
 		{
 			"a",
@@ -411,7 +394,6 @@ func getSortedOutput(key string) []Repo {
 			jan3,
 			false,
 			"",
-			true,
 		},
 		{
 			"e",
@@ -420,7 +402,6 @@ func getSortedOutput(key string) []Repo {
 			jan3a,
 			true,
 			"",
-			true,
 		},
 		{
 			"b",
@@ -429,7 +410,6 @@ func getSortedOutput(key string) []Repo {
 			jan4,
 			true,
 			"",
-			true,
 		},
 	}
 	sortedBySynced := []Repo{
@@ -440,7 +420,6 @@ func getSortedOutput(key string) []Repo {
 			jan1,
 			false,
 			"",
-			true,
 		},
 		{
 			"a",
@@ -449,7 +428,6 @@ func getSortedOutput(key string) []Repo {
 			jan3,
 			false,
 			"",
-			true,
 		},
 		{
 			"e",
@@ -458,7 +436,6 @@ func getSortedOutput(key string) []Repo {
 			jan3a,
 			true,
 			"",
-			true,
 		},
 		{
 			"b",
@@ -467,7 +444,6 @@ func getSortedOutput(key string) []Repo {
 			jan4,
 			true,
 			"",
-			true,
 		},
 		{
 			"d",
@@ -476,7 +452,6 @@ func getSortedOutput(key string) []Repo {
 			jan2,
 			true,
 			"",
-			true,
 		},
 	}
 	outputOptions := map[string][]Repo{
@@ -498,7 +473,6 @@ func getFilteredOutputSynced(key string) []Repo {
 			jan3a,
 			true,
 			"",
-			true,
 		},
 		{
 			"b",
@@ -507,7 +481,6 @@ func getFilteredOutputSynced(key string) []Repo {
 			jan4,
 			true,
 			"",
-			true,
 		},
 		{
 			"d",
@@ -516,7 +489,6 @@ func getFilteredOutputSynced(key string) []Repo {
 			jan2,
 			true,
 			"",
-			true,
 		},
 	}
 	filteredBySyncNo := []Repo{
@@ -527,7 +499,6 @@ func getFilteredOutputSynced(key string) []Repo {
 			jan1,
 			false,
 			"",
-			true,
 		},
 		{
 			"a",
@@ -536,7 +507,6 @@ func getFilteredOutputSynced(key string) []Repo {
 			jan3,
 			false,
 			"",
-			true,
 		},
 	}
 	outputOptions := map[string][]Repo{
@@ -555,7 +525,6 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan3a,
 			true,
 			"",
-			true,
 		},
 		{
 			"a",
@@ -564,7 +533,6 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan3,
 			false,
 			"",
-			true,
 		},
 	}
 	filteredByLastModifiedLEQjan3 := []Repo{
@@ -575,7 +543,6 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan3a,
 			true,
 			"",
-			true,
 		},
 		{
 			"c",
@@ -584,7 +551,6 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan1,
 			false,
 			"",
-			true,
 		},
 		{
 			"d",
@@ -593,7 +559,6 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan2,
 			true,
 			"",
-			true,
 		},
 		{
 			"a",
@@ -602,7 +567,6 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan3,
 			false,
 			"",
-			true,
 		},
 	}
 	filteredByLastModifiedGEQjan3 := []Repo{
@@ -613,7 +577,6 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan3a,
 			true,
 			"",
-			true,
 		},
 		{
 			"b",
@@ -622,7 +585,6 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan4,
 			true,
 			"",
-			true,
 		},
 		{
 			"a",
@@ -631,7 +593,6 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan3,
 			false,
 			"",
-			true,
 		},
 	}
 	filteredByLastModifiedLESjan3 := []Repo{
@@ -642,7 +603,6 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan1,
 			false,
 			"",
-			true,
 		},
 		{
 			"d",
@@ -651,7 +611,6 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan2,
 			true,
 			"",
-			true,
 		},
 	}
 	filteredByLastModifiedGRTjan3 := []Repo{
@@ -662,7 +621,6 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan4,
 			true,
 			"",
-			true,
 		},
 	}
 	outputOptions := map[string][]Repo{
@@ -687,7 +645,6 @@ func getApplyQueriesResult() []Repo {
 			jan4,
 			true,
 			"",
-			true,
 		},
 		{
 			"d",
@@ -696,7 +653,6 @@ func getApplyQueriesResult() []Repo {
 			jan2,
 			true,
 			"",
-			true,
 		},
 		{
 			"e",
@@ -705,7 +661,6 @@ func getApplyQueriesResult() []Repo {
 			jan3a,
 			true,
 			"",
-			true,
 		},
 	}
 }

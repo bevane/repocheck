@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"slices"
 	"strings"
 	"time"
 )
@@ -20,7 +19,6 @@ type Repo struct {
 	LastModified     time.Time
 	SyncedWithRemote bool
 	SyncDescription  string
-	valid            bool
 }
 
 func GetReposWithDetails(root string) ([]Repo, error) {
@@ -57,13 +55,8 @@ func GetReposWithDetails(root string) ([]Repo, error) {
 			LastModified:     lastModified,
 			SyncedWithRemote: syncedWithRemote,
 			SyncDescription:  syncDescription,
-			valid:            true,
 		}
 	}
-	// clean up invalid repos
-	repos = slices.DeleteFunc(repos, func(repo Repo) bool {
-		return !repo.valid
-	})
 	return repos, nil
 }
 
