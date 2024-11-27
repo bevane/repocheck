@@ -2,10 +2,13 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/bevane/repocheck/app"
-	"github.com/spf13/cobra"
 	"os"
 	"path/filepath"
+	"time"
+
+	"github.com/bevane/repocheck/app"
+	"github.com/briandowns/spinner"
+	"github.com/spf13/cobra"
 )
 
 var opt = app.NewQueries()
@@ -34,16 +37,20 @@ func Execute() {
 }
 
 func repocheckCmd(cmd *cobra.Command, args []string) error {
+	s := spinner.New(spinner.CharSets[14], 100*time.Millisecond, spinner.WithWriter(os.Stderr))
+	s.Start()
 	var err error
 	var root string
 	// run validation of flag values in the beginning before proceeding
 	// further
 	err = app.ValidateQueries(opt)
 	if err != nil {
+		s.Stop()
 		return fmt.Errorf("repocheck: %v", err)
 	}
 	wd, err := os.Getwd()
 	if err != nil {
+		s.Stop()
 		return fmt.Errorf("repocheck: error getting working dir: %v", err)
 	}
 	if len(args) == 0 {
@@ -58,6 +65,7 @@ func repocheckCmd(cmd *cobra.Command, args []string) error {
 	}
 	repos, err := app.GetReposWithDetails(root)
 	if err != nil {
+		s.Stop()
 		return fmt.Errorf(
 			"repocheck: cannot run check on '%v': %v",
 			root,
@@ -66,6 +74,7 @@ func repocheckCmd(cmd *cobra.Command, args []string) error {
 	}
 	err = app.ApplyQueries(opt, &repos)
 	if err != nil {
+		s.Stop()
 		return fmt.Errorf("repocheck: %v", err)
 	}
 	var output string
@@ -75,6 +84,7 @@ func repocheckCmd(cmd *cobra.Command, args []string) error {
 	default:
 		table, err := app.ConstructTable(repos)
 		if err != nil {
+			s.Stop()
 			return fmt.Errorf(
 				"repocheck: error constructing table: %v",
 				err,
@@ -83,6 +93,7 @@ func repocheckCmd(cmd *cobra.Command, args []string) error {
 		summary := app.ConstructSummary(repos, root)
 		output = fmt.Sprintf("%v\n%v\n", table, summary)
 	}
+	s.Stop()
 	fmt.Print(output)
 	return nil
 }
