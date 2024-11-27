@@ -1,8 +1,10 @@
 package app
 
 import (
+	"errors"
 	"fmt"
 	"io/fs"
+	"log/slog"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -10,13 +12,6 @@ import (
 	"strings"
 	"time"
 )
-
-// helper function to streamline error checks for unhandled errors
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
 
 type Repo struct {
 	Name             string
@@ -36,11 +31,25 @@ func GetReposWithDetails(root string) ([]Repo, error) {
 		return nil, err
 	}
 	for i, path := range repoPaths {
-		dirFS, err := fs.Sub(fsys, path)
-		check(err)
-		lastModified := getContentLastModifiedTime(dirFS)
 		absPath := filepath.Join(root, path)
+		dirFS, err := fs.Sub(fsys, path)
+		if err != nil {
+			slog.Warn(fmt.Sprintf("Unable to get the filesystem at %v, %v\n", absPath, err))
+			continue
+		}
+		lastModified, err := getContentLastModifiedTime(dirFS)
+		// dont skip and only log a warning if lastmodified date could
+		// not be calculated as it might still be possible for the the
+		// directory to be a valid git repo
+		if err != nil {
+			slog.Warn(fmt.Sprintf("Unable get last modified time in %v, %v\n", absPath, err))
+		}
+		// skip this directory as it is most likely not a git repo
 		syncedWithRemote, syncDescription, err := getSyncStatus(absPath)
+		if err != nil {
+			slog.Warn(fmt.Sprintf("Unable to run git command in %v, %v\n", absPath, err))
+			continue
+		}
 		repos[i] = Repo{
 			Name:             filepath.Base(path),
 			Path:             path,
@@ -49,12 +58,6 @@ func GetReposWithDetails(root string) ([]Repo, error) {
 			SyncedWithRemote: syncedWithRemote,
 			SyncDescription:  syncDescription,
 			valid:            true,
-		}
-		// error from getSyncStatus most likely means the directory
-		// is not a git repository, hence set valid to false to mark
-		// it as a non-repo
-		if err != nil {
-			repos[i].valid = false
 		}
 	}
 	// clean up invalid repos
@@ -74,7 +77,9 @@ func listRepoPaths(fileSystem fs.FS) ([]string, error) {
 			return nil
 		}
 		subDirs, err := fs.ReadDir(fileSystem, path)
-		check(err)
+		if err != nil {
+			return err
+		}
 		for _, subDir := range subDirs {
 			// avoid counting dirs with .git file as a repo
 			if !subDir.IsDir() {
@@ -96,14 +101,18 @@ func listRepoPaths(fileSystem fs.FS) ([]string, error) {
 	return repoPaths, nil
 }
 
-func getContentLastModifiedTime(fileSystem fs.FS) time.Time {
+func getContentLastModifiedTime(fileSystem fs.FS) (time.Time, error) {
 	// returns the lastModified time of the most recently modified file/directory
 	// in the given files system while ignoring the .git folder
 	dirInfo, err := fs.Stat(fileSystem, ".")
-	check(err)
+	if err != nil {
+		return time.Time{}, err
+	}
 	lastModified := dirInfo.ModTime()
-	fs.WalkDir(fileSystem, ".", func(path string, d fs.DirEntry, err error) error {
-		check(err)
+	err = fs.WalkDir(fileSystem, ".", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
 		// ignore .git folder's last modified date since it can change
 		// when running git status even though the repo's contents have
 		// not changed
@@ -111,14 +120,19 @@ func getContentLastModifiedTime(fileSystem fs.FS) time.Time {
 			return fs.SkipDir
 		}
 		subDirInfo, err := d.Info()
-		check(err)
+		if err != nil {
+			return err
+		}
 		if subDirInfo.ModTime().Compare(lastModified) == 1 {
 			lastModified = subDirInfo.ModTime()
 		}
 
 		return nil
 	})
-	return lastModified
+	if err != nil {
+		return time.Time{}, err
+	}
+	return lastModified, nil
 }
 
 func getSyncStatus(absPath string) (bool, string, error) {
@@ -128,11 +142,7 @@ func getSyncStatus(absPath string) (bool, string, error) {
 	cmdCommitStatus.Dir = absPath
 	out, err := cmdCommitStatus.CombinedOutput()
 	if err != nil {
-		notARepo := strings.Contains(string(out), "not a git repository")
-		if notARepo {
-			return false, "", err
-		}
-		return false, fmt.Sprintf("Error: %v", string(out)), nil
+		return false, "", errors.New(string(out))
 	}
 	allChangesCommitted, commitStatusDescription := evaluateCommitSyncStatus(string(out))
 	statusDescription += commitStatusDescription
