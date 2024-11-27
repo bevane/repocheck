@@ -44,7 +44,7 @@ func TestGetContentLastModifiedDate(t *testing.T) {
 		"test/testfile.test":       {ModTime: tOld},
 	}
 	want := tNew
-	got := getContentLastModifiedTime(testFsys)
+	got, _ := getContentLastModifiedTime(testFsys)
 	if !got.Equal(want) {
 		t.Errorf("got %v want %v", got, want)
 	}
