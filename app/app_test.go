@@ -8,7 +8,11 @@ import (
 	"time"
 )
 
-func TestListRepoDirectories(t *testing.T) {
+// Functions that do file io and require actual directories to exist
+// are not covered in these unit tests. Those functions are covered in the main
+// e2e test
+
+func TestListRepoPaths(t *testing.T) {
 	modTime, _ := time.Parse(time.RFC3339, "2024-01-01T15:00:00Z")
 	testFsys := fstest.MapFS{
 		"repo1/.git/.keep":         {ModTime: modTime},
@@ -20,27 +24,12 @@ func TestListRepoDirectories(t *testing.T) {
 		"norepo2/repo3/.git/.keep": {ModTime: modTime},
 		"norepo2/repo3/.keep":      {ModTime: modTime},
 	}
-	want := []Repo{
-		{
-			Name:         "repo3",
-			Path:         "norepo2/repo3",
-			LastModified: modTime,
-			valid:        true,
-		},
-		{
-			Name:         "repo1",
-			Path:         "repo1",
-			LastModified: modTime,
-			valid:        true,
-		},
-		{
-			Name:         "repo2",
-			Path:         "repo2",
-			LastModified: modTime,
-			valid:        true,
-		},
+	want := []string{
+		"norepo2/repo3",
+		"repo1",
+		"repo2",
 	}
-	got, _ := listRepoDirectories(testFsys)
+	got, _ := listRepoPaths(testFsys)
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %v want %v", got, want)
 	}

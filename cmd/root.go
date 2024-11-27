@@ -56,7 +56,7 @@ func repocheckCmd(cmd *cobra.Command, args []string) error {
 			root = filepath.Join(wd, pathArg)
 		}
 	}
-	repos, err := app.GetRepos(root)
+	repos, err := app.GetReposWithDetails(root)
 	if err != nil {
 		return fmt.Errorf(
 			"repocheck: cannot run check on '%v': %v",
