@@ -32,7 +32,7 @@ func GetReposWithDetails(root string) ([]Repo, error) {
 		absPath := filepath.Join(root, path)
 		dirFS, err := fs.Sub(fsys, path)
 		if err != nil {
-			slog.Warn(fmt.Sprintf("Unable to get the filesystem at %v, %v\n", absPath, err))
+			slog.Warn(fmt.Sprintf("Unable to get the filesystem at %v, %v", absPath, err))
 			continue
 		}
 		lastModified, err := getContentLastModifiedTime(dirFS)
@@ -40,12 +40,12 @@ func GetReposWithDetails(root string) ([]Repo, error) {
 		// not be calculated as it might still be possible for the the
 		// directory to be a valid git repo
 		if err != nil {
-			slog.Warn(fmt.Sprintf("Unable get last modified time in %v, %v\n", absPath, err))
+			slog.Warn(fmt.Sprintf("Unable get last modified time in %v, %v", absPath, err))
 		}
 		// skip this directory as it is most likely not a git repo
 		syncedWithRemote, syncDescription, err := getSyncStatus(absPath)
 		if err != nil {
-			slog.Warn(fmt.Sprintf("Unable to run git command in %v, %v\n", absPath, err))
+			slog.Warn(fmt.Sprintf("Unable to run git command in %v, %v", absPath, err))
 			continue
 		}
 		repos[i] = Repo{
