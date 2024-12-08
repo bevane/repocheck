@@ -9,6 +9,9 @@ import (
 func ConstructTSVOutput(repos []Repo) string {
 	output := "Name\tPath\tLastModified\tSyncedWithRemote\tSyncDescription\n"
 	for _, repo := range repos {
+		if repo.Name == "" {
+			continue
+		}
 		year, month, day := repo.LastModified.Date()
 		lastModifiedDate := fmt.Sprintf("%04d-%02d-%02d", year, int(month), day)
 		oneLineDescription := strings.Join(
@@ -24,6 +27,9 @@ func ConstructSummary(repos []Repo, root string) string {
 	countRepos := len(repos)
 	var countUnsynced int
 	for _, repo := range repos {
+		if repo.Name == "" {
+			continue
+		}
 		if !repo.SyncedWithRemote {
 			countUnsynced++
 		}
@@ -44,7 +50,10 @@ func ConstructTable(repos []Repo) (*table.Table, error) {
 	t.AddThickRule()
 	t.AddRow("Repo", "Path", "Last Modified", "Synced?", "Sync Details")
 	t.AddThickRule()
-	for i := range repos {
+	for i, repo := range repos {
+		if repo.Name == "" {
+			continue
+		}
 		year, month, day := repos[i].LastModified.Date()
 		LastModifiedDate := fmt.Sprintf("%04d-%02d-%02d", year, int(month), day)
 		var isSynced string
