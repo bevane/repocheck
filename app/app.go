@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -22,6 +23,7 @@ type Repo struct {
 }
 
 func GetReposWithDetails(root string) ([]Repo, error) {
+	var wg sync.WaitGroup
 	fsys := os.DirFS(root)
 	repoPaths, err := listRepoPaths(fsys)
 	repos := make([]Repo, len(repoPaths))
@@ -29,34 +31,40 @@ func GetReposWithDetails(root string) ([]Repo, error) {
 		return nil, err
 	}
 	for i, path := range repoPaths {
-		absPath := filepath.Join(root, path)
-		dirFS, err := fs.Sub(fsys, path)
-		if err != nil {
-			slog.Warn(fmt.Sprintf("Unable to get the filesystem at %v, %v", absPath, err))
-			continue
-		}
-		lastModified, err := getContentLastModifiedTime(dirFS)
-		// dont skip and only log a warning if lastmodified date could
-		// not be calculated as it might still be possible for the the
-		// directory to be a valid git repo
-		if err != nil {
-			slog.Warn(fmt.Sprintf("Unable get last modified time in %v, %v", absPath, err))
-		}
-		// skip this directory as it is most likely not a git repo
-		syncedWithRemote, syncDescription, err := getSyncStatus(absPath)
-		if err != nil {
-			slog.Warn(fmt.Sprintf("Unable to run git command in %v, %v", absPath, err))
-			continue
-		}
-		repos[i] = Repo{
-			Name:             filepath.Base(path),
-			Path:             path,
-			AbsPath:          absPath,
-			LastModified:     lastModified,
-			SyncedWithRemote: syncedWithRemote,
-			SyncDescription:  syncDescription,
-		}
+		wg.Add(1)
+		go func(i int, path string) {
+			defer wg.Done()
+			absPath := filepath.Join(root, path)
+			dirFS, err := fs.Sub(fsys, path)
+			if err != nil {
+				slog.Warn(fmt.Sprintf("Unable to get the filesystem at %v, %v", absPath, err))
+				return
+			}
+			lastModified, err := getContentLastModifiedTime(dirFS)
+			// dont skip and only log a warning if lastmodified date could
+			// not be calculated as it might still be possible for the the
+			// directory to be a valid git repo
+			if err != nil {
+				slog.Warn(fmt.Sprintf("Unable get last modified time in %v, %v", absPath, err))
+			}
+			// skip this directory as it is most likely not a git repo
+			syncedWithRemote, syncDescription, err := getSyncStatus(absPath)
+			if err != nil {
+				slog.Warn(fmt.Sprintf("Unable to run git command in %v, %v", absPath, err))
+				return
+			}
+			repos[i] = Repo{
+				Name:             filepath.Base(path),
+				Path:             path,
+				AbsPath:          absPath,
+				LastModified:     lastModified,
+				SyncedWithRemote: syncedWithRemote,
+				SyncDescription:  syncDescription,
+			}
+
+		}(i, path)
 	}
+	wg.Wait()
 	return repos, nil
 }
 
