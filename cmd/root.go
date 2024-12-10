@@ -14,6 +14,7 @@ import (
 
 var opt = app.NewQueries()
 var tsvOutput bool
+var noFetch bool
 var LogWriter *bufio.Writer
 
 var rootCmd = &cobra.Command{
@@ -31,6 +32,7 @@ func init() {
 	rootCmd.Flags().StringVarP(&opt.Synced.Value, "synced", "S", "", "Filter results by synced status of repo. Example: '-S y' | '-S no'")
 	rootCmd.Flags().StringVarP(&opt.LastModified.Value, "lastmodified", "L", "", "Filter results by last modified date of repo. Examples: '-L 2024-01-20' | '--lastmodified \"<2024-01-15\"' | '-L \">=2023-12-22\"'\nNote: surround any filters containing < or > with quotes")
 	rootCmd.Flags().BoolVarP(&tsvOutput, "tsv", "t", false, "Output results as tab separated values")
+	rootCmd.Flags().BoolVarP(&noFetch, "no-fetch", "", false, "Don't run  git fetch for each repo")
 }
 
 func Execute() {
@@ -67,7 +69,7 @@ func repocheckCmd(cmd *cobra.Command, args []string) error {
 			root = filepath.Join(wd, pathArg)
 		}
 	}
-	repos, err := app.GetReposWithDetails(root)
+	repos, err := app.GetReposWithDetails(root, !noFetch)
 	if err != nil {
 		s.Stop()
 		return fmt.Errorf(
