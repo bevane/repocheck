@@ -22,7 +22,7 @@ type Repo struct {
 	SyncDescription  string
 }
 
-func GetReposWithDetails(root string) ([]Repo, error) {
+func GetReposWithDetails(root string, fetch bool) ([]Repo, error) {
 	var wg sync.WaitGroup
 	fsys := os.DirFS(root)
 	repoPaths, err := listRepoPaths(fsys)
@@ -40,9 +40,11 @@ func GetReposWithDetails(root string) ([]Repo, error) {
 				slog.Warn(fmt.Sprintf("Unable to get the filesystem at %v, %v", absPath, err))
 				return
 			}
-			err = gitFetch(absPath)
-			if err != nil {
-				slog.Warn(fmt.Sprintf("Unable to run git fetch at %v, %v", absPath, err))
+			if fetch {
+				err = gitFetch(absPath)
+				if err != nil {
+					slog.Warn(fmt.Sprintf("Unable to run git fetch at %v, %v", absPath, err))
+				}
 			}
 			lastModified, err := getContentLastModifiedTime(dirFS)
 			// dont skip and only log a warning if lastmodified date could
