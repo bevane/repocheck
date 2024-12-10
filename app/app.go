@@ -40,6 +40,10 @@ func GetReposWithDetails(root string) ([]Repo, error) {
 				slog.Warn(fmt.Sprintf("Unable to get the filesystem at %v, %v", absPath, err))
 				return
 			}
+			err = gitFetch(absPath)
+			if err != nil {
+				slog.Warn(fmt.Sprintf("Unable to run git fetch at %v, %v", absPath, err))
+			}
 			lastModified, err := getContentLastModifiedTime(dirFS)
 			// dont skip and only log a warning if lastmodified date could
 			// not be calculated as it might still be possible for the the
@@ -50,7 +54,7 @@ func GetReposWithDetails(root string) ([]Repo, error) {
 			// skip this directory as it is most likely not a git repo
 			syncedWithRemote, syncDescription, err := getSyncStatus(absPath)
 			if err != nil {
-				slog.Warn(fmt.Sprintf("Unable to run git command in %v, %v", absPath, err))
+				slog.Warn(fmt.Sprintf("Unable to run git commands in %v, %v", absPath, err))
 				return
 			}
 			repos[i] = Repo{
@@ -100,6 +104,16 @@ func listRepoPaths(fileSystem fs.FS) ([]string, error) {
 		return nil, err
 	}
 	return repoPaths, nil
+}
+
+func gitFetch(absPath string) error {
+	cmdFetch := exec.Command("git", "fetch", "-q")
+	cmdFetch.Dir = absPath
+	out, err := cmdFetch.CombinedOutput()
+	if err != nil {
+		return errors.New(string(out))
+	}
+	return nil
 }
 
 func getContentLastModifiedTime(fileSystem fs.FS) (time.Time, error) {
