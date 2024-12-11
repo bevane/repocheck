@@ -26,6 +26,7 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
+	rootCmd.AddCommand(completionCmd)
 	LogWriter = bufio.NewWriter(os.Stderr)
 	log.SetOutput(LogWriter)
 	rootCmd.Flags().StringVarP(&opt.Sort.Value, "sort", "s", "lastmodified", "Key to sort the results by. Example: '-s name'. Options: lastmodified | name | path | synced")
