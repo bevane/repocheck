@@ -22,7 +22,14 @@ var rootCmd = &cobra.Command{
 	Short: "repocheck is a cli tool to show repos in a directory and info about them",
 	Long:  "repocheck is a cli tool to show repos in a directory and info about them - see info for each repo such as absolute path of repo, last modified date, whether repo is synced with remote (whether it has uncommited changes or branches that are ahead etc.)",
 	Args:  cobra.MaximumNArgs(1),
-	RunE:  repocheckCmd,
+	// allow shell to autocomplete file path for the first argument
+	ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		if len(args) < 1 {
+			return nil, cobra.ShellCompDirectiveDefault
+		}
+		return nil, cobra.ShellCompDirectiveNoFileComp
+	},
+	RunE: repocheckCmd,
 }
 
 func init() {
