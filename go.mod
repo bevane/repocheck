@@ -20,5 +20,7 @@ require (
 	golang.org/x/term v0.1.0 // indirect
 )
 
-// switched to alpha versioning, 1.0.0 no longer latest
-retract v1.0.0
+retract (
+	v1.0.0 // Published accidentally.
+	v1.0.1 // Contains retractions only.
+)
