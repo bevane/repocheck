@@ -23,4 +23,5 @@ require (
 retract (
 	v1.0.0 // Published accidentally.
 	v1.0.1 // Contains retractions only.
+	v1.0.2 // Contains retractions only.
 )
