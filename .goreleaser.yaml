@@ -64,6 +64,7 @@ brews:
     repository:
       owner: bevane
       name: homebrew-tap
+      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
     directory: Formula
     install: |-
       bin.install "repocheck"
