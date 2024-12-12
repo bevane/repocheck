@@ -3,14 +3,14 @@ module github.com/bevane/repocheck
 go 1.22.3
 
 require (
+	github.com/briandowns/spinner v1.23.1
 	github.com/clinaresl/table v1.1.0-beta
+	github.com/google/go-cmp v0.6.0
 	github.com/spf13/cobra v1.8.1
 )
 
 require (
-	github.com/briandowns/spinner v1.23.1 // indirect
 	github.com/fatih/color v1.7.0 // indirect
-	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/mattn/go-colorable v0.1.2 // indirect
 	github.com/mattn/go-isatty v0.0.8 // indirect
