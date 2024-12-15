@@ -8,12 +8,30 @@ repo is synced with remote etc.
 
 ## Installation
 
-Install go v1.22 or later - [Official installation instructions](https://go.dev/doc/install)
+Pre-built packages for Windows, macOS, and Linux are found on the [Releases](https://github.com/bevane/repocheck/releases) page.
 
-To download and install repocheck, run:
+### Homebrew on macOS or Linux
+```
+brew tap bevane/tap
+brew install repocheck
+```
+
+### Go install - multiplatform
+Requires [go v1.22](https://go.dev/doc/install) or later
 
 `go install github.com/bevane/repocheck@latest`
 
+### Shell completions
+Installing pre-built packages and brew package will install [completions](https://en.wikipedia.org/wiki/Command-line_completion) automatically.
+
+For other cases including `go install`, if you want shell completions, you need to manually install it.
+
+Manual Instructions:
+1. Clone this repo `git clone https://github.com/bevane/repocheck`
+2. Run `./scripts/completions.sh` to generate shell fragments for bash, zsh & fish in `/completions`
+3. Copy the shell fragment for your shell into the appropriate directory for your shell.
+   - Example:
+    `mv completions/repocheck.bash /usr/share/bash-completion/completions/repocheck`
 ## Usage
 
 ### Basic Usage
