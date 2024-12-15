@@ -70,6 +70,14 @@ Target directory can be passed in as an arg either as a relative path or an abso
 
 ### Additional flags
 
+#### No fetch
+By default, repocheck will run a git fetch for each repo before determining
+its sync status to ensure that the information is up to date.
+
+Repocheck can be run without doing git fetch for each repo with the no fetch flag:
+
+`repocheck --no-fetch`
+
 #### Sort
 Sort flag `-s` or `--sort` can be used to sort the results by a specific key
 
@@ -111,10 +119,11 @@ Machine-readable output can be piped to other command line utilities:
 
 `repocheck --tsv | grep exercises` to only show lines containing "exercises"
 
-# Discussions
+# Contact
 
-Interested in this project and have requests for specific features or want to discuss about this repo?
-Let me know in [discussions](https://github.com/bevane/repocheck/discussions)
+Submit an [issue](https://github.com/bevane/repocheck/issues/new)
+
+[![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/bevane50)](https://x.com/bevane50)
 
 
 # License
