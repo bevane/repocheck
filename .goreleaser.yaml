@@ -88,6 +88,12 @@ aurs:
 
 nfpms:
   -
+    formats:
+      - apk
+      - deb
+      - rpm
+      - termux.deb
+      - archlinux
     contents:
       - src: ./completions/repocheck.bash
         dst: /usr/share/bash-completion/completions/repocheck
