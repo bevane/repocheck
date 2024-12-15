@@ -43,12 +43,14 @@ func getInputReposByKey(key string) []Repo {
 			AbsPath:          "/home/repos/wheels",
 			SyncedWithRemote: true,
 			LastModified:     jan1,
+			Author:           "Test Author",
 		},
 		{
 			Name:             "engine",
 			AbsPath:          "/home/repos/engine",
 			SyncedWithRemote: true,
 			LastModified:     jan2,
+			Author:           "Test Author",
 		},
 	}
 	reposWithLongFields := []Repo{
@@ -58,6 +60,7 @@ func getInputReposByKey(key string) []Repo {
 			SyncedWithRemote: false,
 			LastModified:     jan1,
 			SyncDescription:  "- has uncommitted changes\n- has branch(es) with no remote branch",
+			Author:           "Test Author",
 		},
 		{
 			Name:             "stone-drift-moon-sparkle-breeze",
@@ -65,6 +68,7 @@ func getInputReposByKey(key string) []Repo {
 			SyncedWithRemote: false,
 			LastModified:     jan2,
 			SyncDescription:  "- has uncommitted changes\n- has branch(es) with no remote branch\n- has branch(es) that are ahead",
+			Author:           "Test Author",
 		},
 	}
 	keyToInputs := map[string][]Repo{
@@ -76,14 +80,14 @@ func getInputReposByKey(key string) []Repo {
 
 func getTSVOutputByKey(key string) string {
 	outWithShortFields :=
-		`Name	Path	LastModified	SyncedWithRemote	SyncDescription
-wheels	/home/repos/wheels	2024-01-01	true	
-engine	/home/repos/engine	2024-01-02	true	
+		`Name	Path	Author	LastModified	SyncedWithRemote	SyncDescription
+wheels	/home/repos/wheels	Test Author	2024-01-01	true	
+engine	/home/repos/engine	Test Author	2024-01-02	true	
 `
 	outWithLongFields :=
-		`Name	Path	LastModified	SyncedWithRemote	SyncDescription
-blink-frost-dune-glimmer	/home/repos/blink-frost-dune-glimmer	2024-01-01	false	- has uncommitted changes - has branch(es) with no remote branch
-stone-drift-moon-sparkle-breeze	/home/repos/stone-drift-moon-sparkle-breeze	2024-01-02	false	- has uncommitted changes - has branch(es) with no remote branch - has branch(es) that are ahead
+		`Name	Path	Author	LastModified	SyncedWithRemote	SyncDescription
+blink-frost-dune-glimmer	/home/repos/blink-frost-dune-glimmer	Test Author	2024-01-01	false	- has uncommitted changes - has branch(es) with no remote branch
+stone-drift-moon-sparkle-breeze	/home/repos/stone-drift-moon-sparkle-breeze	Test Author	2024-01-02	false	- has uncommitted changes - has branch(es) with no remote branch - has branch(es) that are ahead
 `
 
 	keyToOutputs := map[string]string{

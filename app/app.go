@@ -20,6 +20,7 @@ type Repo struct {
 	LastModified     time.Time
 	SyncedWithRemote bool
 	SyncDescription  string
+	Author           string
 }
 
 func GetReposWithDetails(root string, fetch bool) ([]Repo, error) {
@@ -59,6 +60,10 @@ func GetReposWithDetails(root string, fetch bool) ([]Repo, error) {
 				slog.Warn(fmt.Sprintf("Unable to run git commands in %v, %v", absPath, err))
 				return
 			}
+			author, err := getLastCommitAuthor(absPath)
+			if err != nil {
+				slog.Warn(fmt.Sprintf("Unable to get commit author in %v, %v", absPath, err))
+			}
 			repos[i] = Repo{
 				Name:             filepath.Base(path),
 				Path:             path,
@@ -66,6 +71,7 @@ func GetReposWithDetails(root string, fetch bool) ([]Repo, error) {
 				LastModified:     lastModified,
 				SyncedWithRemote: syncedWithRemote,
 				SyncDescription:  syncDescription,
+				Author:           author,
 			}
 
 		}(i, path)
@@ -179,6 +185,17 @@ func getSyncStatus(absPath string) (bool, string, error) {
 	statusDescription = strings.TrimSuffix(string(statusDescription), "\n")
 	syncedWithRemote := allBranchesSynced && allChangesCommitted
 	return syncedWithRemote, statusDescription, nil
+}
+
+func getLastCommitAuthor(absPath string) (string, error) {
+	cmdFetch := exec.Command("git", "log", "-1", "--pretty=%an")
+	cmdFetch.Dir = absPath
+	out, err := cmdFetch.CombinedOutput()
+	if err != nil {
+		return "", errors.New(string(out))
+	}
+	author := strings.TrimSuffix(string(out), "\n")
+	return author, nil
 }
 
 func evaluateCommitSyncStatus(gitOut string) (bool, string) {

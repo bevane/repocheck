@@ -248,6 +248,7 @@ func getInputRepos() []Repo {
 			jan3a,
 			true,
 			"",
+			"author e",
 		},
 		{
 			"b",
@@ -256,6 +257,7 @@ func getInputRepos() []Repo {
 			jan4,
 			true,
 			"",
+			"author ab",
 		},
 		{
 			"c",
@@ -264,6 +266,7 @@ func getInputRepos() []Repo {
 			jan1,
 			false,
 			"",
+			"author cd",
 		},
 		{
 			"d",
@@ -272,6 +275,7 @@ func getInputRepos() []Repo {
 			jan2,
 			true,
 			"",
+			"author cd",
 		},
 		{
 			"a",
@@ -280,6 +284,7 @@ func getInputRepos() []Repo {
 			jan3,
 			false,
 			"",
+			"author ab",
 		},
 	}
 }
@@ -294,6 +299,7 @@ func getSortedOutput(key string) []Repo {
 			jan3,
 			false,
 			"",
+			"author ab",
 		},
 		{
 			"b",
@@ -302,6 +308,7 @@ func getSortedOutput(key string) []Repo {
 			jan4,
 			true,
 			"",
+			"author ab",
 		},
 		{
 			"c",
@@ -310,6 +317,7 @@ func getSortedOutput(key string) []Repo {
 			jan1,
 			false,
 			"",
+			"author cd",
 		},
 		{
 			"d",
@@ -318,6 +326,7 @@ func getSortedOutput(key string) []Repo {
 			jan2,
 			true,
 			"",
+			"author cd",
 		},
 		{
 			"e",
@@ -326,6 +335,7 @@ func getSortedOutput(key string) []Repo {
 			jan3a,
 			true,
 			"",
+			"author e",
 		},
 	}
 	sortedByAbsPath := []Repo{
@@ -336,6 +346,7 @@ func getSortedOutput(key string) []Repo {
 			jan2,
 			true,
 			"",
+			"author cd",
 		},
 		{
 			"a",
@@ -344,6 +355,7 @@ func getSortedOutput(key string) []Repo {
 			jan3,
 			false,
 			"",
+			"author ab",
 		},
 		{
 			"e",
@@ -352,6 +364,7 @@ func getSortedOutput(key string) []Repo {
 			jan3a,
 			true,
 			"",
+			"author e",
 		},
 		{
 			"b",
@@ -360,6 +373,7 @@ func getSortedOutput(key string) []Repo {
 			jan4,
 			true,
 			"",
+			"author ab",
 		},
 		{
 			"c",
@@ -368,6 +382,7 @@ func getSortedOutput(key string) []Repo {
 			jan1,
 			false,
 			"",
+			"author cd",
 		},
 	}
 	sortedByLastModified := []Repo{
@@ -378,6 +393,7 @@ func getSortedOutput(key string) []Repo {
 			jan1,
 			false,
 			"",
+			"author cd",
 		},
 		{
 			"d",
@@ -386,6 +402,7 @@ func getSortedOutput(key string) []Repo {
 			jan2,
 			true,
 			"",
+			"author cd",
 		},
 		{
 			"a",
@@ -394,6 +411,7 @@ func getSortedOutput(key string) []Repo {
 			jan3,
 			false,
 			"",
+			"author ab",
 		},
 		{
 			"e",
@@ -402,6 +420,7 @@ func getSortedOutput(key string) []Repo {
 			jan3a,
 			true,
 			"",
+			"author e",
 		},
 		{
 			"b",
@@ -410,6 +429,7 @@ func getSortedOutput(key string) []Repo {
 			jan4,
 			true,
 			"",
+			"author ab",
 		},
 	}
 	sortedBySynced := []Repo{
@@ -420,6 +440,7 @@ func getSortedOutput(key string) []Repo {
 			jan1,
 			false,
 			"",
+			"author cd",
 		},
 		{
 			"a",
@@ -428,6 +449,7 @@ func getSortedOutput(key string) []Repo {
 			jan3,
 			false,
 			"",
+			"author ab",
 		},
 		{
 			"e",
@@ -436,6 +458,7 @@ func getSortedOutput(key string) []Repo {
 			jan3a,
 			true,
 			"",
+			"author e",
 		},
 		{
 			"b",
@@ -444,6 +467,7 @@ func getSortedOutput(key string) []Repo {
 			jan4,
 			true,
 			"",
+			"author ab",
 		},
 		{
 			"d",
@@ -452,6 +476,7 @@ func getSortedOutput(key string) []Repo {
 			jan2,
 			true,
 			"",
+			"author cd",
 		},
 	}
 	outputOptions := map[string][]Repo{
@@ -473,6 +498,7 @@ func getFilteredOutputSynced(key string) []Repo {
 			jan3a,
 			true,
 			"",
+			"author e",
 		},
 		{
 			"b",
@@ -481,6 +507,7 @@ func getFilteredOutputSynced(key string) []Repo {
 			jan4,
 			true,
 			"",
+			"author ab",
 		},
 		{
 			"d",
@@ -489,6 +516,7 @@ func getFilteredOutputSynced(key string) []Repo {
 			jan2,
 			true,
 			"",
+			"author cd",
 		},
 	}
 	filteredBySyncNo := []Repo{
@@ -499,6 +527,7 @@ func getFilteredOutputSynced(key string) []Repo {
 			jan1,
 			false,
 			"",
+			"author cd",
 		},
 		{
 			"a",
@@ -507,6 +536,7 @@ func getFilteredOutputSynced(key string) []Repo {
 			jan3,
 			false,
 			"",
+			"author ab",
 		},
 	}
 	outputOptions := map[string][]Repo{
@@ -525,6 +555,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan3a,
 			true,
 			"",
+			"author e",
 		},
 		{
 			"a",
@@ -533,6 +564,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan3,
 			false,
 			"",
+			"author ab",
 		},
 	}
 	filteredByLastModifiedLEQjan3 := []Repo{
@@ -543,6 +575,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan3a,
 			true,
 			"",
+			"author e",
 		},
 		{
 			"c",
@@ -551,6 +584,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan1,
 			false,
 			"",
+			"author cd",
 		},
 		{
 			"d",
@@ -559,6 +593,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan2,
 			true,
 			"",
+			"author cd",
 		},
 		{
 			"a",
@@ -567,6 +602,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan3,
 			false,
 			"",
+			"author ab",
 		},
 	}
 	filteredByLastModifiedGEQjan3 := []Repo{
@@ -577,6 +613,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan3a,
 			true,
 			"",
+			"author e",
 		},
 		{
 			"b",
@@ -585,6 +622,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan4,
 			true,
 			"",
+			"author ab",
 		},
 		{
 			"a",
@@ -593,6 +631,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan3,
 			false,
 			"",
+			"author ab",
 		},
 	}
 	filteredByLastModifiedLESjan3 := []Repo{
@@ -603,6 +642,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan1,
 			false,
 			"",
+			"author cd",
 		},
 		{
 			"d",
@@ -611,6 +651,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan2,
 			true,
 			"",
+			"author cd",
 		},
 	}
 	filteredByLastModifiedGRTjan3 := []Repo{
@@ -621,6 +662,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			jan4,
 			true,
 			"",
+			"author ab",
 		},
 	}
 	outputOptions := map[string][]Repo{
@@ -645,6 +687,7 @@ func getApplyQueriesResult() []Repo {
 			jan4,
 			true,
 			"",
+			"author ab",
 		},
 		{
 			"d",
@@ -653,6 +696,7 @@ func getApplyQueriesResult() []Repo {
 			jan2,
 			true,
 			"",
+			"author cd",
 		},
 		{
 			"e",
@@ -661,6 +705,7 @@ func getApplyQueriesResult() []Repo {
 			jan3a,
 			true,
 			"",
+			"author e",
 		},
 	}
 }
