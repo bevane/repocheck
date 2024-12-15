@@ -7,7 +7,7 @@ import (
 )
 
 func ConstructTSVOutput(repos []Repo) string {
-	output := "Name\tPath\tLastModified\tSyncedWithRemote\tSyncDescription\n"
+	output := "Name\tPath\tAuthor\tLastModified\tSyncedWithRemote\tSyncDescription\n"
 	for _, repo := range repos {
 		if repo.Name == "" {
 			continue
@@ -17,7 +17,7 @@ func ConstructTSVOutput(repos []Repo) string {
 		oneLineDescription := strings.Join(
 			strings.Split(repo.SyncDescription, "\n"), " ",
 		)
-		row := fmt.Sprintf("%s\t%s\t%s\t%t\t%s\n", repo.Name, repo.AbsPath, lastModifiedDate, repo.SyncedWithRemote, oneLineDescription)
+		row := fmt.Sprintf("%s\t%s\t%s\t%s\t%t\t%s\n", repo.Name, repo.AbsPath, repo.Author, lastModifiedDate, repo.SyncedWithRemote, oneLineDescription)
 		output += row
 	}
 	return output
@@ -43,12 +43,12 @@ func ConstructSummary(repos []Repo, root string) string {
 }
 
 func ConstructTable(repos []Repo) (*table.Table, error) {
-	t, err := table.NewTable("| C{15} | L{20} | c | c | L{27} |")
+	t, err := table.NewTable("| C{15} | L{20} | C{12} | c | c | L{27} |")
 	if err != nil {
 		return nil, err
 	}
 	t.AddThickRule()
-	t.AddRow("Repo", "Path", "Last Modified", "Synced?", "Sync Details")
+	t.AddRow("Repo", "Path", "Author", "Last Modified", "Synced?", "Sync Details")
 	t.AddThickRule()
 	for i, repo := range repos {
 		if repo.Name == "" {
@@ -66,6 +66,7 @@ func ConstructTable(repos []Repo) (*table.Table, error) {
 		t.AddRow(
 			repos[i].Name,
 			repos[i].AbsPath,
+			repos[i].Author,
 			LastModifiedDate,
 			isSynced,
 			repos[i].SyncDescription,

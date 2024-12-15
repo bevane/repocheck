@@ -145,6 +145,7 @@ func setupRepoA(root string) error {
 	combinedCommands := `touch file1 &&
 			     touch -t 202401011000 file1 &&
 			     touch -t 202401011000 . &&
+			     git config --local user.name "Test Author A" &&
 			     git add . &&
 			     git commit -m 'add file' &&
 			     git push`
@@ -170,6 +171,7 @@ func setupRepoB(root string) error {
 	// so the results of test are deterministic
 	combinedCommands := `touch file1 &&
 			     touch -t 202401011000 file1 &&
+			     git config --local user.name "Test Author B" &&
 			     git add . &&
 			     git commit -m 'add file' &&
 			     git push
@@ -198,6 +200,7 @@ func setupRepoC(root string) error {
 	// so the results of test are deterministic
 	combinedCommands := `touch file1 &&
 			     touch -t 202401011000 file1 &&
+			     git config --local user.name "Test Author C" &&
 			     git add . &&
 			     git commit -m 'add file' &&
 			     git push
@@ -218,20 +221,20 @@ func setupRepoC(root string) error {
 }
 
 func getCLIOutSnapshot() string {
-	return `┍━━━━━━━━━━━━━━━━━┯━━━━━━━━━━━━━━━━━━━━━━┯━━━━━━━━━━━━━━━┯━━━━━━━━━┯━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┑
-│      Repo       │ Path                 │ Last Modified │ Synced? │ Sync Details                │
-┝━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━┿━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┥
-│        a        │ /tmp/repochecktest/l │  2024-01-01   │   yes   │                             │
-│                 │ ocal/a               │               │         │                             │
-├─────────────────┼──────────────────────┼───────────────┼─────────┼─────────────────────────────┤
-│        b        │ /tmp/repochecktest/l │  2024-01-02   │   no    │ - has uncommitted changes   │
-│                 │ ocal/b               │               │         │                             │
-├─────────────────┼──────────────────────┼───────────────┼─────────┼─────────────────────────────┤
-│        c        │ /tmp/repochecktest/l │  2024-01-03   │   no    │ - has branch(es) with no    │
-│                 │ ocal/c               │               │         │ remote branch               │
-│                 │                      │               │         │ - has branch(es) that are   │
-│                 │                      │               │         │ ahead                       │
-└─────────────────┴──────────────────────┴───────────────┴─────────┴─────────────────────────────┘
+	return `┍━━━━━━━━━━━━━━━━━┯━━━━━━━━━━━━━━━━━━━━━━┯━━━━━━━━━━━━━━┯━━━━━━━━━━━━━━━┯━━━━━━━━━┯━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┑
+│      Repo       │ Path                 │    Author    │ Last Modified │ Synced? │ Sync Details                │
+┝━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━┿━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┥
+│        a        │ /tmp/repochecktest/l │ Test Author  │  2024-01-01   │   yes   │                             │
+│                 │ ocal/a               │      A       │               │         │                             │
+├─────────────────┼──────────────────────┼──────────────┼───────────────┼─────────┼─────────────────────────────┤
+│        b        │ /tmp/repochecktest/l │ Test Author  │  2024-01-02   │   no    │ - has uncommitted changes   │
+│                 │ ocal/b               │      B       │               │         │                             │
+├─────────────────┼──────────────────────┼──────────────┼───────────────┼─────────┼─────────────────────────────┤
+│        c        │ /tmp/repochecktest/l │ Test Author  │  2024-01-03   │   no    │ - has branch(es) with no    │
+│                 │ ocal/c               │      C       │               │         │ remote branch               │
+│                 │                      │              │               │         │ - has branch(es) that are   │
+│                 │                      │              │               │         │ ahead                       │
+└─────────────────┴──────────────────────┴──────────────┴───────────────┴─────────┴─────────────────────────────┘
 3 repos found in /tmp/repochecktest: 2 repo(s) are not synced
 `
 }
