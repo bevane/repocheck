@@ -1,5 +1,7 @@
 # Repo Check
 
+[![GitHub Release](https://img.shields.io/github/v/release/bevane/repocheck?style=for-the-badge)](https://github.com/bevane/repocheck/releases/latest) [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/bevane/repocheck/go.yml?style=for-the-badge)](https://github.com/bevane/repocheck/actions?query=workflow:Go) [![Go Report Card](https://goreportcard.com/badge/github.com/bevane/repocheck?style=for-the-badge)](https://goreportcard.com/report/github.com/bevane/repocheck)
+
 Repo Check is a CLI tool that lists out all local git repos in a directory along with
 additional information such as the last modified date of the repo, whether the
 repo is synced with remote etc.
