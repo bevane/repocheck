@@ -36,11 +36,11 @@ func init() {
 	rootCmd.AddCommand(completionCmd)
 	LogWriter = bufio.NewWriter(os.Stderr)
 	log.SetOutput(LogWriter)
-	rootCmd.Flags().StringVarP(&opt.Sort.Value, "sort", "s", "lastmodified", "Key to sort the results by. Example: '-s name'. Options: lastmodified | name | path | synced")
-	rootCmd.Flags().StringVarP(&opt.Synced.Value, "synced", "S", "", "Filter results by synced status of repo. Example: '-S y' | '-S no'")
-	rootCmd.Flags().StringVarP(&opt.LastModified.Value, "lastmodified", "L", "", "Filter results by last modified date of repo. Examples: '-L 2024-01-20' | '--lastmodified \"<2024-01-15\"' | '-L \">=2023-12-22\"'\nNote: surround any filters containing < or > with quotes")
-	rootCmd.Flags().BoolVarP(&tsvOutput, "tsv", "t", false, "Output results as tab separated values")
-	rootCmd.Flags().BoolVarP(&noFetch, "no-fetch", "", false, "Don't run  git fetch for each repo")
+	rootCmd.Flags().StringVarP(&opt.Sort.Value, "sort", "s", "lastmodified", "Sort results\noptions: lastmodified | name | path | synced")
+	rootCmd.Flags().StringVarP(&opt.Synced.Value, "synced", "S", "", "Filter by synced status of repo\noptions: y | n")
+	rootCmd.Flags().StringVarP(&opt.LastModified.Value, "lastmodified", "L", "", "Filter by last modified date of repo\noptions: yyyy-mm-dd | \">yyyy-mm-dd\" | \">=yyyy-mm-dd\"\nnote: surround any filters containing < or > with quotes")
+	rootCmd.Flags().BoolVarP(&tsvOutput, "tsv", "t", false, "Output as tab separated values")
+	rootCmd.Flags().BoolVarP(&noFetch, "no-fetch", "", false, "Run without doing a git fetch for each repo")
 }
 
 func Execute() {

@@ -4,21 +4,25 @@ Repo Check is a CLI tool that lists out all local git repos in a directory along
 additional information such as the last modified date of the repo, whether the
 repo is synced with remote etc.
 
+![repocheck cli output](docs/demo.gif)
+
 ```
 Usage:
   repocheck [flags]
 
 Flags:
   -h, --help                  help for repocheck
-  -L, --lastmodified string   Filter results by last modified date of repo. Examples: '-L 2024-01-20' | '--lastmodified "<2024-01-15"' | '-L ">=2023-12-22"'
-                              Note: surround any filters containing < or > with quotes
-      --no-fetch              Don't run  git fetch for each repo
-  -s, --sort string           Key to sort the results by. Example: '-s name'. Options: lastmodified | name | path | synced (default "lastmodified")
-  -S, --synced string         Filter results by synced status of repo. Example: '-S y' | '-S no'
-  -t, --tsv                   Output results as tab separated values
+  -L, --lastmodified string   Filter by last modified date of repo
+                              options: yyyy-mm-dd | ">yyyy-mm-dd" | ">=yyyy-mm-dd"
+                              note: surround any filters containing < or > with quotes
+      --no-fetch              Run without doing a git fetch for each repo
+  -s, --sort string           Sort results
+                              options: lastmodified | name | path | synced (default "lastmodified")
+  -S, --synced string         Filter by synced status of repo
+                              options: y | n
+  -t, --tsv                   Output as tab separated values
 ```
-
-![repocheck cli output](docs/demo.gif)
+For more detailed usage instructions see [Usage](#usage)
 
 ## Installation
 
