@@ -74,6 +74,28 @@ func TestSortError(t *testing.T) {
 	}
 }
 
+func TestReverseSort(t *testing.T) {
+	// only one test for reverse sort because the function is simple
+	// and only has one code path
+	want := getReverseSortedByLastModifiedOutput()
+	repos := getInputRepos()
+	// reverse sort will reverse whatever order the input is in and does
+	// not care for the fields in each Repo
+	// so ensure the input is first sorted by lastmodified before reversing
+	// it. Then the reverse sort will sort the input by lastmodified descending
+	testQueries.Sort.Value = "lastmodified"
+	testQueries.Sort.apply(&repos)
+	ReverseSort(&repos)
+	// reverseSort function  mutates the input hence the input itself is compared with want
+	if !reflect.DeepEqual(repos, want) {
+		t.Errorf(
+			"got (%v)\nwant (%v)",
+			repos,
+			want,
+		)
+	}
+}
+
 var syncedFilterTests = []struct {
 	key  string
 	want []Repo
@@ -581,6 +603,56 @@ func getSortedOutput(key string) []Repo {
 		"author":       sortedByAuthor,
 	}
 	return outputOptions[key]
+}
+
+func getReverseSortedByLastModifiedOutput() []Repo {
+	return []Repo{
+		{
+			"b",
+			"repos/b",
+			"/home/user/repos/y/b",
+			jan4,
+			true,
+			"",
+			"author ab",
+		},
+		{
+			"e",
+			"repos/e",
+			"/home/user/repos/x/e",
+			jan3a,
+			true,
+			"",
+			"author e",
+		},
+		{
+			"a",
+			"repos/a",
+			"/home/user/repos/x/a",
+			jan3,
+			false,
+			"",
+			"author ab",
+		},
+		{
+			"d",
+			"repos/d",
+			"/home/user/repos/w/d",
+			jan2,
+			true,
+			"",
+			"author cd",
+		},
+		{
+			"c",
+			"repos/c",
+			"/home/user/repos/z/c",
+			jan1,
+			false,
+			"",
+			"author cd",
+		},
+	}
 }
 
 func getFilteredOutputSynced(key string) []Repo {
