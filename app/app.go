@@ -19,7 +19,7 @@ type Repo struct {
 	AbsPath          string    `json:"path"`
 	LastModified     time.Time `json:"lastModified"`
 	SyncedWithRemote bool      `json:"synced"`
-	SyncDescription  string    `json:"syncDetails"`
+	SyncDetails      []string  `json:"syncDetails"`
 	Author           string    `json:"author"`
 }
 
@@ -70,7 +70,7 @@ func GetReposWithDetails(root string, fetch bool) ([]Repo, error) {
 				AbsPath:          absPath,
 				LastModified:     lastModified,
 				SyncedWithRemote: syncedWithRemote,
-				SyncDescription:  syncDescription,
+				SyncDetails:      syncDescription,
 				Author:           author,
 			}
 
@@ -158,17 +158,21 @@ func getContentLastModifiedTime(fileSystem fs.FS) (time.Time, error) {
 	return lastModified, nil
 }
 
-func getSyncStatus(absPath string) (bool, string, error) {
-	var statusDescription string
+func getSyncStatus(absPath string) (bool, []string, error) {
+	// initialize as non-nil empty slice so that json output will be []
+	// instead of null
+	statusDescription := []string{}
 	// returns "" for repos that have all changes committed
 	cmdCommitStatus := exec.Command("git", "status", "-s")
 	cmdCommitStatus.Dir = absPath
 	out, err := cmdCommitStatus.CombinedOutput()
 	if err != nil {
-		return false, "", errors.New(string(out))
+		return false, nil, errors.New(string(out))
 	}
 	allChangesCommitted, commitStatusDescription := evaluateCommitSyncStatus(string(out))
-	statusDescription += commitStatusDescription
+	if commitStatusDescription != "" {
+		statusDescription = append(statusDescription, commitStatusDescription)
+	}
 
 	// this command will return an output where each line will contain
 	// the status of the branch: "=" - synced, ">" - ahead, "<" - behind
@@ -177,12 +181,12 @@ func getSyncStatus(absPath string) (bool, string, error) {
 	cmdBranchStatus.Dir = absPath
 	out, err = cmdBranchStatus.CombinedOutput()
 	if err != nil {
-		return false, fmt.Sprintf("Error: %v", string(out)), nil
+		return false, nil, errors.New(string(out))
 	}
 	allBranchesSynced, branchStatusDescription := evaluateBranchSyncStatus(string(out))
-	statusDescription += branchStatusDescription
-
-	statusDescription = strings.TrimSuffix(string(statusDescription), "\n")
+	if branchStatusDescription != nil {
+		statusDescription = append(statusDescription, branchStatusDescription...)
+	}
 	syncedWithRemote := allBranchesSynced && allChangesCommitted
 	return syncedWithRemote, statusDescription, nil
 }
@@ -202,13 +206,13 @@ func evaluateCommitSyncStatus(gitOut string) (bool, string) {
 	if gitOut == "" {
 		return true, ""
 	} else {
-		return false, "- uncommitted changes\n"
+		return false, "uncommitted changes"
 	}
 
 }
 
-func evaluateBranchSyncStatus(gitOut string) (bool, string) {
-	var statusDescription string
+func evaluateBranchSyncStatus(gitOut string) (bool, []string) {
+	var statusDescription []string
 	branchesNoRemote := false
 	branchesAhead := false
 	branchesBehind := false
@@ -231,13 +235,13 @@ func evaluateBranchSyncStatus(gitOut string) (bool, string) {
 
 	}
 	if branchesNoRemote {
-		statusDescription += "- untracked branch(es)\n"
+		statusDescription = append(statusDescription, "untracked branch(es)")
 	}
 	if branchesAhead {
-		statusDescription += "- branch(es) ahead\n"
+		statusDescription = append(statusDescription, "branch(es) ahead")
 	}
 	if branchesBehind {
-		statusDescription += "- branch(es) behind\n"
+		statusDescription = append(statusDescription, "branch(es) behind")
 	}
 	allBranchesSynced := !branchesNoRemote && !branchesAhead && !branchesBehind
 	return allBranchesSynced, statusDescription

@@ -64,12 +64,12 @@ func TestEvaluateCommitSyncStatus(t *testing.T) {
 		{
 			"M app/app_test.go",
 			false,
-			"- uncommitted changes\n",
+			"uncommitted changes",
 		},
 		{
 			"M  .jest.config.json\nM  package.json\nA  main.js",
 			false,
-			"- uncommitted changes\n",
+			"uncommitted changes",
 		},
 	}
 
@@ -91,39 +91,42 @@ func TestEvaluateCommitSyncStatus(t *testing.T) {
 
 func TestEvaluateBranchSyncStatus(t *testing.T) {
 	var tests = []struct {
-		gitOut     string
-		wantBool   bool
-		wantString string
+		gitOut      string
+		wantBool    bool
+		wantStrings []string
 	}{
 		{
 			"=",
 			true,
-			"",
+			nil,
 		},
 		{
 			"",
 			false,
-			"- untracked branch(es)\n",
+			[]string{"untracked branch(es)"},
 		},
 		{
 			">",
 			false,
-			"- branch(es) ahead\n",
+			[]string{"branch(es) ahead"},
 		},
 		{
 			"<",
 			false,
-			"- branch(es) behind\n",
+			[]string{"branch(es) behind"},
 		},
 		{
 			"\n=",
 			false,
-			"- untracked branch(es)\n",
+			[]string{"untracked branch(es)"},
 		},
 		{
 			"\n=\n>",
 			false,
-			"- untracked branch(es)\n- branch(es) ahead\n",
+			[]string{
+				"untracked branch(es)",
+				"branch(es) ahead",
+			},
 		},
 	}
 
@@ -131,12 +134,12 @@ func TestEvaluateBranchSyncStatus(t *testing.T) {
 
 		testname := fmt.Sprintf("%v", tt.gitOut)
 		t.Run(testname, func(t *testing.T) {
-			gotBool, gotString := evaluateBranchSyncStatus(tt.gitOut)
-			if gotBool != tt.wantBool || gotString != tt.wantString {
+			gotBool, gotStrings := evaluateBranchSyncStatus(tt.gitOut)
+			if gotBool != tt.wantBool || !reflect.DeepEqual(gotStrings, tt.wantStrings) {
 				t.Errorf(
 					"got (%v, %v) , want (%v, %v)",
-					gotBool, gotString,
-					tt.wantBool, tt.wantString,
+					gotBool, gotStrings,
+					tt.wantBool, tt.wantStrings,
 				)
 			}
 		})

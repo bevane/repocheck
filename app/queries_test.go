@@ -314,7 +314,7 @@ func getInputRepos() []Repo {
 			"/home/user/repos/x/e",
 			jan3a,
 			true,
-			"",
+			nil,
 			"author e",
 		},
 		{
@@ -323,7 +323,7 @@ func getInputRepos() []Repo {
 			"/home/user/repos/y/b",
 			jan4,
 			true,
-			"",
+			nil,
 			"author ab",
 		},
 		{
@@ -332,7 +332,7 @@ func getInputRepos() []Repo {
 			"/home/user/repos/z/c",
 			jan1,
 			false,
-			"",
+			nil,
 			"author cd",
 		},
 		{
@@ -341,7 +341,7 @@ func getInputRepos() []Repo {
 			"/home/user/repos/w/d",
 			jan2,
 			true,
-			"",
+			nil,
 			"author cd",
 		},
 		{
@@ -350,7 +350,7 @@ func getInputRepos() []Repo {
 			"/home/user/repos/x/a",
 			jan3,
 			false,
-			"",
+			nil,
 			"author ab",
 		},
 	}
@@ -365,7 +365,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/x/a",
 			jan3,
 			false,
-			"",
+			nil,
 			"author ab",
 		},
 		{
@@ -374,7 +374,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/y/b",
 			jan4,
 			true,
-			"",
+			nil,
 			"author ab",
 		},
 		{
@@ -383,7 +383,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/z/c",
 			jan1,
 			false,
-			"",
+			nil,
 			"author cd",
 		},
 		{
@@ -392,7 +392,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/w/d",
 			jan2,
 			true,
-			"",
+			nil,
 			"author cd",
 		},
 		{
@@ -401,7 +401,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/x/e",
 			jan3a,
 			true,
-			"",
+			nil,
 			"author e",
 		},
 	}
@@ -412,7 +412,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/w/d",
 			jan2,
 			true,
-			"",
+			nil,
 			"author cd",
 		},
 		{
@@ -421,7 +421,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/x/a",
 			jan3,
 			false,
-			"",
+			nil,
 			"author ab",
 		},
 		{
@@ -430,7 +430,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/x/e",
 			jan3a,
 			true,
-			"",
+			nil,
 			"author e",
 		},
 		{
@@ -439,7 +439,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/y/b",
 			jan4,
 			true,
-			"",
+			nil,
 			"author ab",
 		},
 		{
@@ -448,7 +448,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/z/c",
 			jan1,
 			false,
-			"",
+			nil,
 			"author cd",
 		},
 	}
@@ -459,7 +459,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/z/c",
 			jan1,
 			false,
-			"",
+			nil,
 			"author cd",
 		},
 		{
@@ -468,7 +468,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/w/d",
 			jan2,
 			true,
-			"",
+			nil,
 			"author cd",
 		},
 		{
@@ -477,7 +477,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/x/a",
 			jan3,
 			false,
-			"",
+			nil,
 			"author ab",
 		},
 		{
@@ -486,7 +486,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/x/e",
 			jan3a,
 			true,
-			"",
+			nil,
 			"author e",
 		},
 		{
@@ -495,7 +495,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/y/b",
 			jan4,
 			true,
-			"",
+			nil,
 			"author ab",
 		},
 	}
@@ -506,7 +506,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/z/c",
 			jan1,
 			false,
-			"",
+			nil,
 			"author cd",
 		},
 		{
@@ -515,7 +515,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/x/a",
 			jan3,
 			false,
-			"",
+			nil,
 			"author ab",
 		},
 		{
@@ -524,7 +524,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/x/e",
 			jan3a,
 			true,
-			"",
+			nil,
 			"author e",
 		},
 		{
@@ -533,7 +533,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/y/b",
 			jan4,
 			true,
-			"",
+			nil,
 			"author ab",
 		},
 		{
@@ -542,7 +542,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/w/d",
 			jan2,
 			true,
-			"",
+			nil,
 			"author cd",
 		},
 	}
@@ -555,7 +555,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/y/b",
 			jan4,
 			true,
-			"",
+			nil,
 			"author ab",
 		},
 		{
@@ -564,7 +564,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/x/a",
 			jan3,
 			false,
-			"",
+			nil,
 			"author ab",
 		},
 		{
@@ -573,7 +573,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/z/c",
 			jan1,
 			false,
-			"",
+			nil,
 			"author cd",
 		},
 		{
@@ -582,7 +582,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/w/d",
 			jan2,
 			true,
-			"",
+			nil,
 			"author cd",
 		},
 		{
@@ -591,7 +591,7 @@ func getSortedOutput(key string) []Repo {
 			"/home/user/repos/x/e",
 			jan3a,
 			true,
-			"",
+			nil,
 			"author e",
 		},
 	}
@@ -613,7 +613,7 @@ func getReverseSortedByLastModifiedOutput() []Repo {
 			"/home/user/repos/y/b",
 			jan4,
 			true,
-			"",
+			nil,
 			"author ab",
 		},
 		{
@@ -622,7 +622,7 @@ func getReverseSortedByLastModifiedOutput() []Repo {
 			"/home/user/repos/x/e",
 			jan3a,
 			true,
-			"",
+			nil,
 			"author e",
 		},
 		{
@@ -631,7 +631,7 @@ func getReverseSortedByLastModifiedOutput() []Repo {
 			"/home/user/repos/x/a",
 			jan3,
 			false,
-			"",
+			nil,
 			"author ab",
 		},
 		{
@@ -640,7 +640,7 @@ func getReverseSortedByLastModifiedOutput() []Repo {
 			"/home/user/repos/w/d",
 			jan2,
 			true,
-			"",
+			nil,
 			"author cd",
 		},
 		{
@@ -649,7 +649,7 @@ func getReverseSortedByLastModifiedOutput() []Repo {
 			"/home/user/repos/z/c",
 			jan1,
 			false,
-			"",
+			nil,
 			"author cd",
 		},
 	}
@@ -664,7 +664,7 @@ func getFilteredOutputSynced(key string) []Repo {
 			"/home/user/repos/x/e",
 			jan3a,
 			true,
-			"",
+			nil,
 			"author e",
 		},
 		{
@@ -673,7 +673,7 @@ func getFilteredOutputSynced(key string) []Repo {
 			"/home/user/repos/y/b",
 			jan4,
 			true,
-			"",
+			nil,
 			"author ab",
 		},
 		{
@@ -682,7 +682,7 @@ func getFilteredOutputSynced(key string) []Repo {
 			"/home/user/repos/w/d",
 			jan2,
 			true,
-			"",
+			nil,
 			"author cd",
 		},
 	}
@@ -693,7 +693,7 @@ func getFilteredOutputSynced(key string) []Repo {
 			"/home/user/repos/z/c",
 			jan1,
 			false,
-			"",
+			nil,
 			"author cd",
 		},
 		{
@@ -702,7 +702,7 @@ func getFilteredOutputSynced(key string) []Repo {
 			"/home/user/repos/x/a",
 			jan3,
 			false,
-			"",
+			nil,
 			"author ab",
 		},
 	}
@@ -721,7 +721,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			"/home/user/repos/x/e",
 			jan3a,
 			true,
-			"",
+			nil,
 			"author e",
 		},
 		{
@@ -730,7 +730,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			"/home/user/repos/x/a",
 			jan3,
 			false,
-			"",
+			nil,
 			"author ab",
 		},
 	}
@@ -741,7 +741,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			"/home/user/repos/x/e",
 			jan3a,
 			true,
-			"",
+			nil,
 			"author e",
 		},
 		{
@@ -750,7 +750,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			"/home/user/repos/z/c",
 			jan1,
 			false,
-			"",
+			nil,
 			"author cd",
 		},
 		{
@@ -759,7 +759,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			"/home/user/repos/w/d",
 			jan2,
 			true,
-			"",
+			nil,
 			"author cd",
 		},
 		{
@@ -768,7 +768,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			"/home/user/repos/x/a",
 			jan3,
 			false,
-			"",
+			nil,
 			"author ab",
 		},
 	}
@@ -779,7 +779,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			"/home/user/repos/x/e",
 			jan3a,
 			true,
-			"",
+			nil,
 			"author e",
 		},
 		{
@@ -788,7 +788,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			"/home/user/repos/y/b",
 			jan4,
 			true,
-			"",
+			nil,
 			"author ab",
 		},
 		{
@@ -797,7 +797,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			"/home/user/repos/x/a",
 			jan3,
 			false,
-			"",
+			nil,
 			"author ab",
 		},
 	}
@@ -808,7 +808,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			"/home/user/repos/z/c",
 			jan1,
 			false,
-			"",
+			nil,
 			"author cd",
 		},
 		{
@@ -817,7 +817,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			"/home/user/repos/w/d",
 			jan2,
 			true,
-			"",
+			nil,
 			"author cd",
 		},
 	}
@@ -828,7 +828,7 @@ func getFilteredOutputLastModified(key string) []Repo {
 			"/home/user/repos/y/b",
 			jan4,
 			true,
-			"",
+			nil,
 			"author ab",
 		},
 	}
@@ -850,7 +850,7 @@ func getFilteredOutputAuthor(key string) []Repo {
 			"/home/user/repos/y/b",
 			jan4,
 			true,
-			"",
+			nil,
 			"author ab",
 		},
 		{
@@ -859,7 +859,7 @@ func getFilteredOutputAuthor(key string) []Repo {
 			"/home/user/repos/x/a",
 			jan3,
 			false,
-			"",
+			nil,
 			"author ab",
 		},
 	}
@@ -870,7 +870,7 @@ func getFilteredOutputAuthor(key string) []Repo {
 			"/home/user/repos/z/c",
 			jan1,
 			false,
-			"",
+			nil,
 			"author cd",
 		},
 		{
@@ -879,7 +879,7 @@ func getFilteredOutputAuthor(key string) []Repo {
 			"/home/user/repos/w/d",
 			jan2,
 			true,
-			"",
+			nil,
 			"author cd",
 		},
 	}
@@ -890,7 +890,7 @@ func getFilteredOutputAuthor(key string) []Repo {
 			"/home/user/repos/x/e",
 			jan3a,
 			true,
-			"",
+			nil,
 			"author e",
 		},
 	}
@@ -915,7 +915,7 @@ func getApplyQueriesResult() []Repo {
 			"/home/user/repos/y/b",
 			jan4,
 			true,
-			"",
+			nil,
 			"author ab",
 		},
 		{
@@ -924,7 +924,7 @@ func getApplyQueriesResult() []Repo {
 			"/home/user/repos/w/d",
 			jan2,
 			true,
-			"",
+			nil,
 			"author cd",
 		},
 		{
@@ -933,7 +933,7 @@ func getApplyQueriesResult() []Repo {
 			"/home/user/repos/x/e",
 			jan3a,
 			true,
-			"",
+			nil,
 			"author e",
 		},
 	}
