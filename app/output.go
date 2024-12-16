@@ -7,7 +7,7 @@ import (
 )
 
 func ConstructTSVOutput(repos []Repo) string {
-	output := "Name\tPath\tAuthor\tLastModified\tSyncedWithRemote\tSyncDescription\n"
+	output := "Name\tPath\tAuthor\tLastModified\tSynced\tSyncDetails\n"
 	for _, repo := range repos {
 		if repo.Name == "" {
 			continue
@@ -43,12 +43,12 @@ func ConstructSummary(repos []Repo, root string) string {
 }
 
 func ConstructTable(repos []Repo) (*table.Table, error) {
-	t, err := table.NewTable("| C{15} | L{20} | C{12} | c | c | L{27} |")
+	t, err := table.NewTable("| C{15} | L{20} | L{10} | c | c | L{23} |")
 	if err != nil {
 		return nil, err
 	}
 	t.AddThickRule()
-	t.AddRow("Repo", "Path", "Author", "Last Modified", "Synced?", "Sync Details")
+	t.AddRow("Repo", "Path", "Author", "Last Modified", "Synced", "Sync Details")
 	t.AddThickRule()
 	for i, repo := range repos {
 		if repo.Name == "" {
@@ -56,19 +56,13 @@ func ConstructTable(repos []Repo) (*table.Table, error) {
 		}
 		year, month, day := repos[i].LastModified.Date()
 		LastModifiedDate := fmt.Sprintf("%04d-%02d-%02d", year, int(month), day)
-		var isSynced string
-		if repos[i].SyncedWithRemote {
-			isSynced = "yes"
-		} else {
-			isSynced = "no"
-		}
 
 		t.AddRow(
 			repos[i].Name,
 			repos[i].AbsPath,
 			repos[i].Author,
 			LastModifiedDate,
-			isSynced,
+			repos[i].SyncedWithRemote,
 			repos[i].SyncDescription,
 		)
 		t.AddSingleRule()
