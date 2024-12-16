@@ -1,0 +1,34 @@
+[
+	{
+		"name": "simple-library",
+		"path": "/home/bevane/repos/2024/simple-library",
+		"lastModified": "2024-09-15T07:19:03.578267313+07:00",
+		"synced": false,
+		"syncDetails": "- untracked branch(es)\n- branch(es) behind",
+		"author": "Saturnfive"
+	},
+	{
+		"name": "react-app",
+		"path": "/home/bevane/repos/2024/react-app",
+		"lastModified": "2024-09-25T05:51:14.314263116+07:00",
+		"synced": false,
+		"syncDetails": "- untracked branch(es)",
+		"author": "bevane"
+	},
+	{
+		"name": "maze-solver",
+		"path": "/home/bevane/repos/2024/maze-solver",
+		"lastModified": "2024-09-15T07:21:46.047216802+07:00",
+		"synced": true,
+		"syncDetails": "",
+		"author": "bevane"
+	},
+	{
+		"name": "javascript-exercises",
+		"path": "/home/bevane/repos/2024/javascript-exercises",
+		"lastModified": "2024-09-15T07:21:17.120661128+07:00",
+		"synced": false,
+		"syncDetails": "- uncommitted changes",
+		"author": "Austin Sullivan"
+	}
+]

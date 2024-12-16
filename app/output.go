@@ -1,10 +1,17 @@
 package app
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/clinaresl/table"
 	"strings"
 )
+
+func ConstructJSONOutput(repos []Repo) string {
+	jsonOutput, _ := json.MarshalIndent(&repos, "", "\t")
+	// add new line at the end because Marshal does not end the output with newline
+	return string(jsonOutput) + "\n"
+}
 
 func ConstructTSVOutput(repos []Repo) string {
 	output := "Name\tPath\tAuthor\tLastModified\tSynced\tSyncDetails\n"
