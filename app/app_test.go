@@ -64,12 +64,12 @@ func TestEvaluateCommitSyncStatus(t *testing.T) {
 		{
 			"M app/app_test.go",
 			false,
-			"- has uncommitted changes\n",
+			"- uncommitted changes\n",
 		},
 		{
 			"M  .jest.config.json\nM  package.json\nA  main.js",
 			false,
-			"- has uncommitted changes\n",
+			"- uncommitted changes\n",
 		},
 	}
 
@@ -103,27 +103,27 @@ func TestEvaluateBranchSyncStatus(t *testing.T) {
 		{
 			"",
 			false,
-			"- has branch(es) with no remote branch\n",
+			"- untracked branch(es)\n",
 		},
 		{
 			">",
 			false,
-			"- has branch(es) that are ahead\n",
+			"- branch(es) ahead\n",
 		},
 		{
 			"<",
 			false,
-			"- has branch(es) that are behind\n",
+			"- branch(es) behind\n",
 		},
 		{
 			"\n=",
 			false,
-			"- has branch(es) with no remote branch\n",
+			"- untracked branch(es)\n",
 		},
 		{
 			"\n=\n>",
 			false,
-			"- has branch(es) with no remote branch\n- has branch(es) that are ahead\n",
+			"- untracked branch(es)\n- branch(es) ahead\n",
 		},
 	}
 

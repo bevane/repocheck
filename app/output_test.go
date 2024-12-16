@@ -59,7 +59,7 @@ func getInputReposByKey(key string) []Repo {
 			AbsPath:          "/home/repos/blink-frost-dune-glimmer",
 			SyncedWithRemote: false,
 			LastModified:     jan1,
-			SyncDescription:  "- has uncommitted changes\n- has branch(es) with no remote branch",
+			SyncDescription:  "- uncommitted changes\n- untracked branch(es)",
 			Author:           "Test Author",
 		},
 		{
@@ -67,7 +67,7 @@ func getInputReposByKey(key string) []Repo {
 			AbsPath:          "/home/repos/stone-drift-moon-sparkle-breeze",
 			SyncedWithRemote: false,
 			LastModified:     jan2,
-			SyncDescription:  "- has uncommitted changes\n- has branch(es) with no remote branch\n- has branch(es) that are ahead",
+			SyncDescription:  "- uncommitted changes\n- untracked branch(es)\n- branch(es) ahead",
 			Author:           "Test Author",
 		},
 	}
@@ -80,14 +80,14 @@ func getInputReposByKey(key string) []Repo {
 
 func getTSVOutputByKey(key string) string {
 	outWithShortFields :=
-		`Name	Path	Author	LastModified	SyncedWithRemote	SyncDescription
+		`Name	Path	Author	LastModified	Synced	SyncDetails
 wheels	/home/repos/wheels	Test Author	2024-01-01	true	
 engine	/home/repos/engine	Test Author	2024-01-02	true	
 `
 	outWithLongFields :=
-		`Name	Path	Author	LastModified	SyncedWithRemote	SyncDescription
-blink-frost-dune-glimmer	/home/repos/blink-frost-dune-glimmer	Test Author	2024-01-01	false	- has uncommitted changes - has branch(es) with no remote branch
-stone-drift-moon-sparkle-breeze	/home/repos/stone-drift-moon-sparkle-breeze	Test Author	2024-01-02	false	- has uncommitted changes - has branch(es) with no remote branch - has branch(es) that are ahead
+		`Name	Path	Author	LastModified	Synced	SyncDetails
+blink-frost-dune-glimmer	/home/repos/blink-frost-dune-glimmer	Test Author	2024-01-01	false	- uncommitted changes - untracked branch(es)
+stone-drift-moon-sparkle-breeze	/home/repos/stone-drift-moon-sparkle-breeze	Test Author	2024-01-02	false	- uncommitted changes - untracked branch(es) - branch(es) ahead
 `
 
 	keyToOutputs := map[string]string{

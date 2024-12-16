@@ -202,7 +202,7 @@ func evaluateCommitSyncStatus(gitOut string) (bool, string) {
 	if gitOut == "" {
 		return true, ""
 	} else {
-		return false, "- has uncommitted changes\n"
+		return false, "- uncommitted changes\n"
 	}
 
 }
@@ -231,13 +231,13 @@ func evaluateBranchSyncStatus(gitOut string) (bool, string) {
 
 	}
 	if branchesNoRemote {
-		statusDescription += "- has branch(es) with no remote branch\n"
+		statusDescription += "- untracked branch(es)\n"
 	}
 	if branchesAhead {
-		statusDescription += "- has branch(es) that are ahead\n"
+		statusDescription += "- branch(es) ahead\n"
 	}
 	if branchesBehind {
-		statusDescription += "- has branch(es) that are behind\n"
+		statusDescription += "- branch(es) behind\n"
 	}
 	allBranchesSynced := !branchesNoRemote && !branchesAhead && !branchesBehind
 	return allBranchesSynced, statusDescription
