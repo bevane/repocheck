@@ -14,13 +14,13 @@ import (
 )
 
 type Repo struct {
-	Name             string
-	Path             string
-	AbsPath          string
-	LastModified     time.Time
-	SyncedWithRemote bool
-	SyncDescription  string
-	Author           string
+	Name             string    `json:"name"`
+	Path             string    `json:"-"`
+	AbsPath          string    `json:"path"`
+	LastModified     time.Time `json:"lastModified"`
+	SyncedWithRemote bool      `json:"synced"`
+	SyncDescription  string    `json:"syncDetails"`
+	Author           string    `json:"author"`
 }
 
 func GetReposWithDetails(root string, fetch bool) ([]Repo, error) {

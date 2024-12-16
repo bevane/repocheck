@@ -15,6 +15,7 @@ import (
 
 var opt = app.NewQueries()
 var tsvOutput bool
+var jsonOutput bool
 var noFetch bool
 var reverseSort bool
 var LogWriter *bufio.Writer
@@ -44,6 +45,7 @@ func init() {
 	rootCmd.Flags().StringVarP(&opt.Author.Value, "author", "A", "", "Filter by author of last commit")
 	rootCmd.Flags().BoolVarP(&reverseSort, "reverse", "r", false, "Sort the results in descending order")
 	rootCmd.Flags().BoolVarP(&tsvOutput, "tsv", "t", false, "Output as tab separated values")
+	rootCmd.Flags().BoolVarP(&jsonOutput, "json", "j", false, "Output as json")
 	rootCmd.Flags().BoolVarP(&noFetch, "no-fetch", "", false, "Run without doing a git fetch for each repo")
 }
 
@@ -112,6 +114,8 @@ func repocheckCmd(cmd *cobra.Command, args []string) error {
 	switch {
 	case tsvOutput:
 		output = app.ConstructTSVOutput(repos)
+	case jsonOutput:
+		output = app.ConstructJSONOutput(repos)
 	default:
 		table, err := app.ConstructTable(repos)
 		if err != nil {
