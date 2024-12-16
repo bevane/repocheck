@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 	"log"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"time"
 )
@@ -54,7 +55,17 @@ func Execute() {
 }
 
 func repocheckCmd(cmd *cobra.Command, args []string) error {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
 	s := spinner.New(spinner.CharSets[14], 100*time.Millisecond, spinner.WithWriter(os.Stderr))
+	// the spinner needs to be stopped before exiting during a interrupt
+	// signal such as ctrl+c, otherwise the cursor will not be returned
+	// to the shell
+	go func() {
+		<-c
+		s.Stop()
+		os.Exit(130)
+	}()
 	s.Start()
 	var err error
 	var root string
