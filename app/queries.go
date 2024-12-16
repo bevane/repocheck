@@ -66,6 +66,16 @@ func sortBySyncStatus(repos []Repo) {
 	})
 }
 
+func sortByAuthor(repos []Repo) {
+	slices.SortStableFunc(repos, func(a, b Repo) int {
+		return strings.Compare(
+			// compare lower case to make sort case insensitive
+			// because author names will be a mix of capitalized
+			// and non-capitalized
+			strings.ToLower(a.Author), strings.ToLower(b.Author))
+	})
+}
+
 type sorter struct {
 	Value        string
 	validOptions map[string]sortFunc
@@ -263,6 +273,7 @@ func NewQueries() *queries {
 		"path":         sortByPath,
 		"lastmodified": sortByLastModified,
 		"synced":       sortBySyncStatus,
+		"author":       sortByAuthor,
 	}}}
 }
 

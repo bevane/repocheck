@@ -36,7 +36,7 @@ func init() {
 	rootCmd.AddCommand(completionCmd)
 	LogWriter = bufio.NewWriter(os.Stderr)
 	log.SetOutput(LogWriter)
-	rootCmd.Flags().StringVarP(&opt.Sort.Value, "sort", "s", "lastmodified", "Sort results\noptions: lastmodified | name | path | synced")
+	rootCmd.Flags().StringVarP(&opt.Sort.Value, "sort", "s", "lastmodified", "Sort results\noptions: author | lastmodified | name | path | synced")
 	rootCmd.Flags().StringVarP(&opt.Synced.Value, "synced", "S", "", "Filter by synced status of repo\noptions: y | n")
 	rootCmd.Flags().StringVarP(&opt.LastModified.Value, "lastmodified", "L", "", "Filter by last modified date of repo\noptions: yyyy-mm-dd | \">yyyy-mm-dd\" | \">=yyyy-mm-dd\"\nnote: surround any filters containing < or > with quotes")
 	rootCmd.Flags().StringVarP(&opt.Author.Value, "author", "A", "", "Filter by author of last commit")

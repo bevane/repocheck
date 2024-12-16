@@ -37,6 +37,10 @@ var sortTests = []struct {
 		"synced",
 		getSortedOutput("synced"),
 	},
+	{
+		"author",
+		getSortedOutput("author"),
+	},
 }
 
 func TestSort(t *testing.T) {
@@ -59,7 +63,7 @@ func TestSort(t *testing.T) {
 }
 
 func TestSortError(t *testing.T) {
-	wantE := fmt.Errorf("invalid is not a valid sort option. Options: lastmodified | name | path | synced")
+	wantE := fmt.Errorf("invalid is not a valid sort option. Options: author | lastmodified | name | path | synced")
 	testQueries.Sort.Value = "invalid"
 	gotE := testQueries.Sort.validate()
 	if gotE == nil || gotE.Error() != wantE.Error() {
@@ -520,11 +524,61 @@ func getSortedOutput(key string) []Repo {
 			"author cd",
 		},
 	}
+	// since both b and a are from same author ab, input b and a will
+	// remain in their original positions according to the input repos
+	sortedByAuthor := []Repo{
+		{
+			"b",
+			"repos/b",
+			"/home/user/repos/y/b",
+			jan4,
+			true,
+			"",
+			"author ab",
+		},
+		{
+			"a",
+			"repos/a",
+			"/home/user/repos/x/a",
+			jan3,
+			false,
+			"",
+			"author ab",
+		},
+		{
+			"c",
+			"repos/c",
+			"/home/user/repos/z/c",
+			jan1,
+			false,
+			"",
+			"author cd",
+		},
+		{
+			"d",
+			"repos/d",
+			"/home/user/repos/w/d",
+			jan2,
+			true,
+			"",
+			"author cd",
+		},
+		{
+			"e",
+			"repos/e",
+			"/home/user/repos/x/e",
+			jan3a,
+			true,
+			"",
+			"author e",
+		},
+	}
 	outputOptions := map[string][]Repo{
 		"name":         sortedByName,
 		"path":         sortedByAbsPath,
 		"lastmodified": sortedByLastModified,
 		"synced":       sortedBySynced,
+		"author":       sortedByAuthor,
 	}
 	return outputOptions[key]
 }
