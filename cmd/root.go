@@ -15,6 +15,7 @@ import (
 var opt = app.NewQueries()
 var tsvOutput bool
 var noFetch bool
+var reverseSort bool
 var LogWriter *bufio.Writer
 
 var rootCmd = &cobra.Command{
@@ -40,6 +41,7 @@ func init() {
 	rootCmd.Flags().StringVarP(&opt.Synced.Value, "synced", "S", "", "Filter by synced status of repo\noptions: y | n")
 	rootCmd.Flags().StringVarP(&opt.LastModified.Value, "lastmodified", "L", "", "Filter by last modified date of repo\noptions: yyyy-mm-dd | \">yyyy-mm-dd\" | \">=yyyy-mm-dd\"\nnote: surround any filters containing < or > with quotes")
 	rootCmd.Flags().StringVarP(&opt.Author.Value, "author", "A", "", "Filter by author of last commit")
+	rootCmd.Flags().BoolVarP(&reverseSort, "reverse", "r", false, "Sort the results in descending order")
 	rootCmd.Flags().BoolVarP(&tsvOutput, "tsv", "t", false, "Output as tab separated values")
 	rootCmd.Flags().BoolVarP(&noFetch, "no-fetch", "", false, "Run without doing a git fetch for each repo")
 }
@@ -91,6 +93,9 @@ func repocheckCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		s.Stop()
 		return fmt.Errorf("repocheck: %v", err)
+	}
+	if reverseSort {
+		app.ReverseSort(&repos)
 	}
 	var output string
 	switch {

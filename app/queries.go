@@ -314,3 +314,12 @@ func ApplyQueries(q *queries, repos *[]Repo) error {
 	}
 	return nil
 }
+
+func ReverseSort(repos *[]Repo) error {
+	// handle reverse sort separately from queries since the reverse flag is a
+	// boolean and does not implement logic for flag values
+	for i, j := 0, len(*repos)-1; i < j; i, j = i+1, j-1 {
+		(*repos)[i], (*repos)[j] = (*repos)[j], (*repos)[i]
+	}
+	return nil
+}
