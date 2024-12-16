@@ -27,6 +27,7 @@ type queries struct {
 	// place sort at the end for better efficiency
 	LastModified lastModifiedFilter
 	Synced       syncedFilter
+	Author       authorFilter
 	Sort         sorter
 }
 
@@ -226,6 +227,31 @@ func (l lastModifiedFilter) apply(repos *[]Repo) error {
 			}
 		}
 
+	}
+	*repos = filteredRepos
+	return nil
+}
+
+type authorFilter struct {
+	Value string
+}
+
+func (s authorFilter) value() string {
+	return s.Value
+}
+
+func (s authorFilter) validate() error {
+	// all querues must be validated through ValidateQueries() before applying
+	// hence return nil to indicate any value for author is valid
+	return nil
+}
+
+func (s authorFilter) apply(repos *[]Repo) error {
+	var filteredRepos []Repo
+	for _, repo := range *repos {
+		if strings.Contains(strings.ToLower(repo.Author), strings.ToLower(s.value())) {
+			filteredRepos = append(filteredRepos, repo)
+		}
 	}
 	*repos = filteredRepos
 	return nil

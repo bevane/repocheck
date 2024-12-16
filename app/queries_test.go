@@ -180,6 +180,47 @@ func TestLastModifiedFilterError(t *testing.T) {
 	}
 }
 
+var authorFilterTests = []struct {
+	key  string
+	want []Repo
+}{
+	{
+		"author ab",
+		getFilteredOutputAuthor("author ab"),
+	},
+	{
+		"author cd",
+		getFilteredOutputAuthor("author cd"),
+	},
+	{
+		"author e",
+		getFilteredOutputAuthor("author e"),
+	},
+	{
+		"author z",
+		getFilteredOutputAuthor("author z"),
+	},
+}
+
+func TestAuthorFilter(t *testing.T) {
+	for _, test := range authorFilterTests {
+		testname := fmt.Sprintf("%v", test.key)
+		t.Run(testname, func(t *testing.T) {
+			testQueries.Author.Value = test.key
+			repos := getInputRepos()
+			err := testQueries.Author.apply(&repos)
+			// the apply function  mutates the input hence the input itself is compared with want
+			if !reflect.DeepEqual(repos, test.want) || err != nil {
+				t.Errorf(
+					"got (%v, %v)\nwant (%v, %v)",
+					repos, err,
+					test.want, nil,
+				)
+			}
+		})
+	}
+}
+
 func TestValidateQueries(t *testing.T) {
 	emptyQueries := NewQueries()
 	validQueries := NewQueries()
@@ -671,6 +712,68 @@ func getFilteredOutputLastModified(key string) []Repo {
 		">=2024-01-03": filteredByLastModifiedGEQjan3,
 		"<2024-01-03":  filteredByLastModifiedLESjan3,
 		">2024-01-03":  filteredByLastModifiedGRTjan3,
+	}
+	return outputOptions[key]
+}
+
+func getFilteredOutputAuthor(key string) []Repo {
+	filteredByAuthorAB := []Repo{
+		{
+			"b",
+			"repos/b",
+			"/home/user/repos/y/b",
+			jan4,
+			true,
+			"",
+			"author ab",
+		},
+		{
+			"a",
+			"repos/a",
+			"/home/user/repos/x/a",
+			jan3,
+			false,
+			"",
+			"author ab",
+		},
+	}
+	filteredByAuthorCD := []Repo{
+		{
+			"c",
+			"repos/c",
+			"/home/user/repos/z/c",
+			jan1,
+			false,
+			"",
+			"author cd",
+		},
+		{
+			"d",
+			"repos/d",
+			"/home/user/repos/w/d",
+			jan2,
+			true,
+			"",
+			"author cd",
+		},
+	}
+	filteredByAuthorE := []Repo{
+		{
+			"e",
+			"repos/e",
+			"/home/user/repos/x/e",
+			jan3a,
+			true,
+			"",
+			"author e",
+		},
+	}
+	var filteredByAuthorZ []Repo
+	outputOptions := map[string][]Repo{
+		"author ab": filteredByAuthorAB,
+		"author cd": filteredByAuthorCD,
+		"author e":  filteredByAuthorE,
+		"author z":  filteredByAuthorZ,
 	}
 	return outputOptions[key]
 }
