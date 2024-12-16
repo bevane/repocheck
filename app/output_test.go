@@ -72,6 +72,7 @@ func getInputReposByKey(key string) []Repo {
 			Name:             "wheels",
 			AbsPath:          "/home/repos/wheels",
 			SyncedWithRemote: true,
+			SyncDetails:      []string{},
 			LastModified:     jan1,
 			Author:           "Test Author",
 		},
@@ -79,6 +80,7 @@ func getInputReposByKey(key string) []Repo {
 			Name:             "engine",
 			AbsPath:          "/home/repos/engine",
 			SyncedWithRemote: true,
+			SyncDetails:      []string{},
 			LastModified:     jan2,
 			Author:           "Test Author",
 		},
@@ -89,7 +91,7 @@ func getInputReposByKey(key string) []Repo {
 			AbsPath:          "/home/repos/blink-frost-dune-glimmer",
 			SyncedWithRemote: false,
 			LastModified:     jan1,
-			SyncDescription:  "- uncommitted changes\n- untracked branch(es)",
+			SyncDetails:      []string{"uncommitted changes", "untracked branch(es)"},
 			Author:           "Test Author",
 		},
 		{
@@ -97,7 +99,7 @@ func getInputReposByKey(key string) []Repo {
 			AbsPath:          "/home/repos/stone-drift-moon-sparkle-breeze",
 			SyncedWithRemote: false,
 			LastModified:     jan2,
-			SyncDescription:  "- uncommitted changes\n- untracked branch(es)\n- branch(es) ahead",
+			SyncDetails:      []string{"uncommitted changes", "untracked branch(es)", "branch(es) ahead"},
 			Author:           "Test Author",
 		},
 	}
@@ -116,8 +118,8 @@ engine	/home/repos/engine	Test Author	2024-01-02	true
 `
 	outWithLongFields :=
 		`Name	Path	Author	LastModified	Synced	SyncDetails
-blink-frost-dune-glimmer	/home/repos/blink-frost-dune-glimmer	Test Author	2024-01-01	false	- uncommitted changes - untracked branch(es)
-stone-drift-moon-sparkle-breeze	/home/repos/stone-drift-moon-sparkle-breeze	Test Author	2024-01-02	false	- uncommitted changes - untracked branch(es) - branch(es) ahead
+blink-frost-dune-glimmer	/home/repos/blink-frost-dune-glimmer	Test Author	2024-01-01	false	uncommitted changes, untracked branch(es)
+stone-drift-moon-sparkle-breeze	/home/repos/stone-drift-moon-sparkle-breeze	Test Author	2024-01-02	false	uncommitted changes, untracked branch(es), branch(es) ahead
 `
 
 	keyToOutputs := map[string]string{
@@ -134,7 +136,7 @@ func getJSONOutputByKey(key string) string {
 		"path": "/home/repos/wheels",
 		"lastModified": "2024-01-01T00:00:00Z",
 		"synced": true,
-		"syncDetails": "",
+		"syncDetails": [],
 		"author": "Test Author"
 	},
 	{
@@ -142,7 +144,7 @@ func getJSONOutputByKey(key string) string {
 		"path": "/home/repos/engine",
 		"lastModified": "2024-01-02T00:00:00Z",
 		"synced": true,
-		"syncDetails": "",
+		"syncDetails": [],
 		"author": "Test Author"
 	}
 ]
@@ -153,7 +155,10 @@ func getJSONOutputByKey(key string) string {
 		"path": "/home/repos/blink-frost-dune-glimmer",
 		"lastModified": "2024-01-01T00:00:00Z",
 		"synced": false,
-		"syncDetails": "- uncommitted changes\n- untracked branch(es)",
+		"syncDetails": [
+			"uncommitted changes",
+			"untracked branch(es)"
+		],
 		"author": "Test Author"
 	},
 	{
@@ -161,7 +166,11 @@ func getJSONOutputByKey(key string) string {
 		"path": "/home/repos/stone-drift-moon-sparkle-breeze",
 		"lastModified": "2024-01-02T00:00:00Z",
 		"synced": false,
-		"syncDetails": "- uncommitted changes\n- untracked branch(es)\n- branch(es) ahead",
+		"syncDetails": [
+			"uncommitted changes",
+			"untracked branch(es)",
+			"branch(es) ahead"
+		],
 		"author": "Test Author"
 	}
 ]

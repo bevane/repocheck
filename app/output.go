@@ -21,10 +21,7 @@ func ConstructTSVOutput(repos []Repo) string {
 		}
 		year, month, day := repo.LastModified.Date()
 		lastModifiedDate := fmt.Sprintf("%04d-%02d-%02d", year, int(month), day)
-		oneLineDescription := strings.Join(
-			strings.Split(repo.SyncDescription, "\n"), " ",
-		)
-		row := fmt.Sprintf("%s\t%s\t%s\t%s\t%t\t%s\n", repo.Name, repo.AbsPath, repo.Author, lastModifiedDate, repo.SyncedWithRemote, oneLineDescription)
+		row := fmt.Sprintf("%s\t%s\t%s\t%s\t%t\t%s\n", repo.Name, repo.AbsPath, repo.Author, lastModifiedDate, repo.SyncedWithRemote, strings.Join(repo.SyncDetails, ", "))
 		output += row
 	}
 	return output
@@ -63,6 +60,10 @@ func ConstructTable(repos []Repo) (*table.Table, error) {
 		}
 		year, month, day := repos[i].LastModified.Date()
 		LastModifiedDate := fmt.Sprintf("%04d-%02d-%02d", year, int(month), day)
+		prettySyncDetails := ""
+		for _, line := range repo.SyncDetails {
+			prettySyncDetails += "- " + line + "\n"
+		}
 
 		t.AddRow(
 			repos[i].Name,
@@ -70,7 +71,7 @@ func ConstructTable(repos []Repo) (*table.Table, error) {
 			repos[i].Author,
 			LastModifiedDate,
 			repos[i].SyncedWithRemote,
-			repos[i].SyncDescription,
+			prettySyncDetails,
 		)
 		t.AddSingleRule()
 	}
