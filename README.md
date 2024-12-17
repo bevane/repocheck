@@ -78,7 +78,7 @@ Target directory can be passed in as an arg either as a relative path or an abso
 By default, repocheck will run a git fetch for each repo before determining
 its sync status to ensure that the information is up to date.
 
-Repocheck can be run without doing git fetch for each repo with the no fetch flag:
+Repocheck can be run without doing git fetch for each repo with the `--no-fetch` flag:
 
 `repocheck --no-fetch`
 
@@ -89,14 +89,23 @@ Sort flag `-s` or `--sort` can be used to sort the results by a specific key
 
 `repocheck -s synced` to sort by sync status of the repo - unsynced repos will be at the top
 
+Generally the results will be sorted in ascending order. Use `-r` or `--reverse` to sort in **descending order**
+
+`repocheck --sort name --reverse` to sort by repo name in reverse (descending) order
+
+`repocheck -s synced -r` to sort by sync status of the repo with unsynced repos at the bottom
+
 #### Filters
 Supported filter flags:
 - `-L` or `--lastmodified` - filter results by repos that were last modified on, before or after a certain date
 - `-S` or `--synced` - filter results by synced status of repo
+- `-A` or `--author` - filter results by name of author of last commit for each repo
 
 **Examples**
 
 `repocheck --synced y` to only show repos that are synced
+
+`repocheck --author "Foo Bar"` to only show repos where the author of the last commit is named Foo Bar
 
 `repocheck --lastmodified 2024-01-01` to only show repos that were last modified on 2024-01-01
 
@@ -113,7 +122,8 @@ By default, repocheck will output the results in a pretty human-readable table.
 Repocheck also supports output flags to change the output format
 
 Supported output flags:
-- `-t` or `--tsv` - to output results as tab separated values that are machine-readable
+- `-t` or `--tsv` - to output results as tab separated values
+- `-j` or `--json` - to output results as JSON
 
 **Examples**
 
@@ -134,4 +144,4 @@ Submit an [issue](https://github.com/bevane/repocheck/issues/new)
 Contributions are welcome. Please fork the repo and open pull requests to contribute. Ensure that your code passes the tests and include tests for any changes where applicable.
 
 # License
-Repo Check is released under the MIT License
+Repocheck is released under the MIT License
