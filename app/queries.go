@@ -106,10 +106,6 @@ func (s sorter) validate() error {
 }
 
 func (s sorter) apply(repos *[]Repo) error {
-	err := s.validate()
-	if err != nil {
-		return err
-	}
 	// select the appropriate sort function based on flag value
 	sort := s.validOptions[strings.ToLower(s.Value)]
 	sort(*repos)
@@ -136,10 +132,6 @@ func (s syncedFilter) validate() error {
 }
 
 func (s syncedFilter) apply(repos *[]Repo) error {
-	err := s.validate()
-	if err != nil {
-		return err
-	}
 	value := strings.ToLower(s.Value)
 	var queryBool bool
 	if value == "yes" || value == "y" {
@@ -191,10 +183,6 @@ func (l lastModifiedFilter) validate() error {
 }
 
 func (l lastModifiedFilter) apply(repos *[]Repo) error {
-	err := l.validate()
-	if err != nil {
-		return err
-	}
 	var dateString string
 	var queryDate time.Time
 	var filteredRepos []Repo
