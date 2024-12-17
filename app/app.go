@@ -33,6 +33,8 @@ func GetReposWithDetails(root string, fetch bool) ([]Repo, error) {
 	// gather all the repo paths first so that each repo can be concurrently
 	// processed below
 	repoPaths, err := listRepoPaths(fsys)
+	// set to same length as repos so that goroutines can write to each
+	// index of repos safely without needing to use append
 	repos := make([]Repo, len(repoPaths))
 	if err != nil {
 		return nil, err
@@ -88,7 +90,15 @@ func GetReposWithDetails(root string, fetch bool) ([]Repo, error) {
 		}(i, path)
 	}
 	wg.Wait()
-	return repos, nil
+	// clean up indexes that were not set to a Repo due to errors
+	validRepos := []Repo{}
+	for i := range repos {
+		if repos[i].Name == "" {
+			continue
+		}
+		validRepos = append(validRepos, repos[i])
+	}
+	return validRepos, nil
 }
 
 // returns all paths to directories in a fileSystem that contain a .git folder
