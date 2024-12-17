@@ -21,9 +21,9 @@ var reverseSort bool
 var LogWriter *bufio.Writer
 
 var rootCmd = &cobra.Command{
-	Use:   "repocheck",
-	Short: "repocheck is a cli tool to show repos in a directory and info about them",
-	Long:  "repocheck is a cli tool to show repos in a directory and info about them - see info for each repo such as absolute path of repo, last modified date, whether repo is synced with remote (whether it has uncommitted changes or branches that are ahead etc.)",
+	Use:   "repocheck [path]",
+	Short: "Repocheck is a cli tool that provides an overview of local git repos in a directory",
+	Long:  "Repocheck is a cli tool that provides an overview of local git repos in a directory\nSee valuable info at a quick glance about your repos such as author of last commit, last modified date, whether it is synced with remote and more",
 	Args:  cobra.MaximumNArgs(1),
 	// allow shell to autocomplete file path for the first argument
 	ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
