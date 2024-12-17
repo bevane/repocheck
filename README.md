@@ -1,25 +1,27 @@
-# Repo Check
+# Repocheck
 
 [![GitHub Release](https://img.shields.io/github/v/release/bevane/repocheck?style=for-the-badge)](https://github.com/bevane/repocheck/releases/latest) [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/bevane/repocheck/go.yml?style=for-the-badge)](https://github.com/bevane/repocheck/actions?query=workflow:Go) [![Go Report Card](https://goreportcard.com/badge/github.com/bevane/repocheck?style=for-the-badge)](https://goreportcard.com/report/github.com/bevane/repocheck)
 
-Repo Check is a CLI tool that lists out all local git repos in a directory along with
-additional information such as the last modified date of the repo, whether the
-repo is synced with remote etc.
+Repocheck is a CLI tool that provides an overview of local git repos in a directory.
+See valuable info at a quick glance about your repos such as author of last commit, last modified date, whether it is synced with remote and more
 
 ![repocheck cli output](docs/demo.gif)
 
 ```
 Usage:
-  repocheck [flags]
+  repocheck [path] [flags]
 
 Flags:
+  -A, --author string         Filter by author of last commit
   -h, --help                  help for repocheck
+  -j, --json                  Output as json
   -L, --lastmodified string   Filter by last modified date of repo
                               options: yyyy-mm-dd | ">yyyy-mm-dd" | ">=yyyy-mm-dd"
                               note: surround any filters containing < or > with quotes
       --no-fetch              Run without doing a git fetch for each repo
+  -r, --reverse               Sort the results in descending order
   -s, --sort string           Sort results
-                              options: lastmodified | name | path | synced (default "lastmodified")
+                              options: author | lastmodified | name | path | synced (default "lastmodified")
   -S, --synced string         Filter by synced status of repo
                               options: y | n
   -t, --tsv                   Output as tab separated values
