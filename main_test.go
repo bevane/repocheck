@@ -44,7 +44,7 @@ func TestRepoCheckNoFlags(t *testing.T) {
 	// root contains the fake repos that have been set up in TestMain
 	// ./repocheck is also built in setup
 	cmd := exec.Command("./repocheck", root)
-	out, _ := cmd.CombinedOutput()
+	out, _ := cmd.Output()
 	got := string(out)
 	want := getCLIOutSnapshot()
 	if got != want {
@@ -84,25 +84,17 @@ func initFakeRepos(root string) error {
 	var err error
 	var cmd *exec.Cmd
 	var out []byte
-	repos := []string{"a", "b", "c"}
-	cmd = exec.Command("git", "config", "user.name")
-
-	out, _ = cmd.CombinedOutput()
-	if string(out) == "" {
-		// set test credentials if no credentials are found in git config
-		// to avoid errors due to missing credentials
-		cmd = exec.Command("git", "config", "--global", "user.name", "'Test'")
-		out, err = cmd.CombinedOutput()
-		if err != nil {
-			return fmt.Errorf("%v: %v", err, string(out))
-		}
-		cmd = exec.Command("git", "config", "--global", "user.email", "'test@github.com'")
-		out, err = cmd.CombinedOutput()
-		if err != nil {
-			return fmt.Errorf("%v: %v", err, string(out))
-		}
-	}
+	repos := []string{"a", "b", "c", "notARepo"}
 	for _, repo := range repos {
+		// create an empty .git folder in notARepo to force an error
+		// this is used to ensure that an error repo will not show in output
+		if repo == "notARepo" {
+			err = os.MkdirAll(filepath.Join(root, repo, ".git"), 0755)
+			if err != nil {
+				return err
+			}
+			continue
+		}
 		remotePath := filepath.Join(root, "remote", repo)
 		localPath := filepath.Join(root, "local", repo)
 		err = os.MkdirAll(remotePath, 0755)
@@ -146,6 +138,7 @@ func setupRepoA(root string) error {
 			     touch -t 202401011000 file1 &&
 			     touch -t 202401011000 . &&
 			     git config --local user.name "Test Author A" &&
+			     git config --local user.email "testa@test.com" &&
 			     git add . &&
 			     git commit -m 'add file' &&
 			     git push`
@@ -172,6 +165,7 @@ func setupRepoB(root string) error {
 	combinedCommands := `touch file1 &&
 			     touch -t 202401011000 file1 &&
 			     git config --local user.name "Test Author B" &&
+			     git config --local user.email "testb@test.com" &&
 			     git add . &&
 			     git commit -m 'add file' &&
 			     git push
@@ -201,6 +195,7 @@ func setupRepoC(root string) error {
 	combinedCommands := `touch file1 &&
 			     touch -t 202401011000 file1 &&
 			     git config --local user.name "Test Author C" &&
+			     git config --local user.email "testc@test.com" &&
 			     git add . &&
 			     git commit -m 'add file' &&
 			     git push
