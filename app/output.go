@@ -16,6 +16,7 @@ func ConstructJSONOutput(repos []Repo) string {
 func ConstructTSVOutput(repos []Repo) string {
 	output := "Name\tPath\tAuthor\tLastModified\tSynced\tSyncDetails\n"
 	for _, repo := range repos {
+		// skip any invalid repos
 		if repo.Name == "" {
 			continue
 		}
@@ -31,6 +32,7 @@ func ConstructSummary(repos []Repo, root string) string {
 	countRepos := len(repos)
 	var countUnsynced int
 	for _, repo := range repos {
+		// skip any invalid repos
 		if repo.Name == "" {
 			continue
 		}
@@ -55,12 +57,14 @@ func ConstructTable(repos []Repo) (*table.Table, error) {
 	t.AddRow("Repo", "Path", "Author", "Last Modified", "Synced", "Sync Details")
 	t.AddThickRule()
 	for i, repo := range repos {
+		// skip any invalid repos
 		if repo.Name == "" {
 			continue
 		}
 		year, month, day := repos[i].LastModified.Date()
 		LastModifiedDate := fmt.Sprintf("%04d-%02d-%02d", year, int(month), day)
 		prettySyncDetails := ""
+		// format sync details so that each detail is in its own line
 		for _, line := range repo.SyncDetails {
 			prettySyncDetails += "- " + line + "\n"
 		}

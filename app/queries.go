@@ -24,7 +24,8 @@ type query interface {
 }
 
 type queries struct {
-	// place sort at the end for better efficiency
+	// place sort at the end as there will be less elements to sort in the
+	// slice after filtering
 	LastModified lastModifiedFilter
 	Synced       syncedFilter
 	Author       authorFilter
@@ -33,29 +34,31 @@ type queries struct {
 
 type sortFunc func([]Repo)
 
+// sorts in alphabetical order ascending
 func sortByName(repos []Repo) {
 	slices.SortStableFunc(repos, func(a, b Repo) int {
 		return strings.Compare(a.Name, b.Name)
 	})
 }
 
+// sorts in alphabetical order ascending
 func sortByPath(repos []Repo) {
 	slices.SortStableFunc(repos, func(a, b Repo) int {
 		return strings.Compare(a.AbsPath, b.AbsPath)
 	})
 }
 
+// sorts in order of last modified datetime ascending
 func sortByLastModified(repos []Repo) {
 	slices.SortStableFunc(repos, func(a, b Repo) int {
 		return a.LastModified.Compare(b.LastModified)
 	})
 }
 
+// sorts false values first and then true values as it is likely user
+// will want to see repos that are not synced first
 func sortBySyncStatus(repos []Repo) {
 	slices.SortStableFunc(repos, func(a, b Repo) int {
-		// sort to show false values first as it is more likely the
-		// user will want to see which repos are not synced when they
-		// sort by sync status
 		if a.SyncedWithRemote && !b.SyncedWithRemote {
 			return 1
 		} else if !a.SyncedWithRemote && b.SyncedWithRemote {
@@ -66,6 +69,7 @@ func sortBySyncStatus(repos []Repo) {
 	})
 }
 
+// sorts in alphabetical order ascending
 func sortByAuthor(repos []Repo) {
 	slices.SortStableFunc(repos, func(a, b Repo) int {
 		return strings.Compare(
@@ -141,6 +145,8 @@ func (s syncedFilter) apply(repos *[]Repo) error {
 	if value == "yes" || value == "y" {
 		queryBool = true
 	} else {
+		// no need to check for no explicitly as it is already covered
+		// by validate() method
 		queryBool = false
 	}
 	var filteredRepos []Repo
@@ -163,6 +169,8 @@ func (s lastModifiedFilter) value() string {
 
 func (l lastModifiedFilter) validate() error {
 	var dateString string
+	// check for each prefix before trimming because some prefixes include
+	// other prefixes. ex: <= includes <
 	switch {
 	case strings.HasPrefix(l.Value, "<="):
 		dateString = strings.TrimPrefix(l.Value, "<=")
@@ -259,6 +267,7 @@ func (s authorFilter) validate() error {
 func (s authorFilter) apply(repos *[]Repo) error {
 	var filteredRepos []Repo
 	for _, repo := range *repos {
+		// case insensitive check
 		if strings.Contains(strings.ToLower(repo.Author), strings.ToLower(s.value())) {
 			filteredRepos = append(filteredRepos, repo)
 		}
@@ -267,8 +276,11 @@ func (s authorFilter) apply(repos *[]Repo) error {
 	return nil
 }
 
+// returns a pointer to queries struct and is used to set the filters and sort
+// for repos
 func NewQueries() *queries {
 	return &queries{Sort: sorter{validOptions: map[string]sortFunc{
+		// add possible sort flag values and their corresponding sort functions here
 		"name":         sortByName,
 		"path":         sortByPath,
 		"lastmodified": sortByLastModified,
@@ -280,6 +292,9 @@ func NewQueries() *queries {
 func ValidateQueries(q *queries) error {
 	var err error
 	v := reflect.ValueOf(*q)
+	// loop through the fields in Queries and execute the validate method
+	// for each query that has been set, meaning the flag was used by the
+	// user
 	for i := 0; i < v.NumField(); i++ {
 		query := v.Field(i).Interface().(query)
 		// ignore queries where the value has not been set
@@ -299,6 +314,9 @@ func ValidateQueries(q *queries) error {
 func ApplyQueries(q *queries, repos *[]Repo) error {
 	var err error
 	v := reflect.ValueOf(*q)
+	// loop through the fields in Queries and execute the apply method
+	// for each query that has been set, meaning the flag was used by the
+	// user
 	for i := 0; i < v.NumField(); i++ {
 		query := v.Field(i).Interface().(query)
 		// ignore queries where the value has not been set
@@ -317,7 +335,7 @@ func ApplyQueries(q *queries, repos *[]Repo) error {
 
 func ReverseSort(repos *[]Repo) error {
 	// handle reverse sort separately from queries since the reverse flag is a
-	// boolean and does not implement logic for flag values
+	// boolean and does not implement logic for flag values and validate method
 	for i, j := 0, len(*repos)-1; i < j; i, j = i+1, j-1 {
 		(*repos)[i], (*repos)[j] = (*repos)[j], (*repos)[i]
 	}

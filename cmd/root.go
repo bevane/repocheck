@@ -36,7 +36,12 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
+	// add completion command manually since the default sub command is
+	// disabled for cli's that dont have any other sub commands
 	rootCmd.AddCommand(completionCmd)
+	// write logs to a buffer first and then flush buffer at the end to show
+	// the logs so that logs dont interrupt spinner which also outputs to
+	// stderr
 	LogWriter = bufio.NewWriter(os.Stderr)
 	log.SetOutput(LogWriter)
 	rootCmd.Flags().StringVarP(&opt.Sort.Value, "sort", "s", "lastmodified", "Sort results\noptions: author | lastmodified | name | path | synced")
@@ -72,7 +77,8 @@ func repocheckCmd(cmd *cobra.Command, args []string) error {
 	var err error
 	var root string
 	// run validation of flag values in the beginning before proceeding
-	// further
+	// further to avoid unnecessary computation in the case of invalid
+	// flag values
 	err = app.ValidateQueries(opt)
 	if err != nil {
 		s.Stop()
@@ -83,9 +89,12 @@ func repocheckCmd(cmd *cobra.Command, args []string) error {
 		s.Stop()
 		return fmt.Errorf("repocheck: error getting working dir: %v", err)
 	}
+	// if no arg is provided, run repocheck on current working directory
 	if len(args) == 0 {
 		root = wd
 	} else {
+		// support passing in path both as an absolute path and a
+		// relative path
 		pathArg := args[0]
 		if filepath.IsAbs(pathArg) {
 			root = pathArg
@@ -102,11 +111,13 @@ func repocheckCmd(cmd *cobra.Command, args []string) error {
 			err,
 		)
 	}
+	// applies all queries that have been set through flags
 	err = app.ApplyQueries(opt, &repos)
 	if err != nil {
 		s.Stop()
 		return fmt.Errorf("repocheck: %v", err)
 	}
+	// apply reverse sort at the end if reverse sort flag is true
 	if reverseSort {
 		app.ReverseSort(&repos)
 	}
