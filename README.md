@@ -133,15 +133,15 @@ Machine-readable output can be piped to other command line utilities:
 
 `repocheck --tsv | grep exercises` to only show lines containing "exercises"
 
-# Contact
+## Contact
 
 Submit an [issue](https://github.com/bevane/repocheck/issues/new)
 
 [![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/bevane50)](https://x.com/bevane50)
 
-# Contributions
+## Contributing
 
 Contributions are welcome. Please fork the repo and open pull requests to contribute. Ensure that your code passes the tests and include tests for any changes where applicable.
 
-# License
+## License
 Repocheck is released under the MIT License
